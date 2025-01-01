@@ -12,6 +12,11 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+
+        'Proxima': ['Proxima', 'sans-serif'],
+        'ProximaBold' : ['ProximaBold', 'sans-serif'] 
+      }
     },
   },
   plugins: [],

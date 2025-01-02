@@ -9,6 +9,7 @@ const DynamicComponent = dynamic(() => import('../../vendor-page/page'), {
   ssr: false,
 });
 
+
 interface VendorPageProps {
   params: Promise<{ id: string }>;
 }

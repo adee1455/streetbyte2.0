@@ -1,4 +1,5 @@
-"use client";
+// src/app/vendor-page/page.tsx
+
 import React, { useState } from 'react';
 import { Star, Phone, Navigation2, PenSquareIcon } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -20,12 +21,11 @@ interface Vendor {
   reviews: Review[];
 }
 
-// Rename DynamicComponentProps to VendorPageProps to make it clear
 interface VendorPageProps {
   vendor: Vendor;
 }
 
-export default function VendorPage({ vendor } : VendorPageProps){
+const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
 
@@ -194,3 +194,5 @@ export default function VendorPage({ vendor } : VendorPageProps){
   );
 };
 
+// Ensure you're using `default` export for this component.
+export default VendorPage;

@@ -24,7 +24,7 @@ export const Input: React.FC<InputProps> = ({
         className={cn(
           "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900",
           "focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500",
-          icon && "pl-10",
+          icon ? "pl-10" : "", // Make sure the icon class is only added if the icon exists
           error && "border-red-500",
           className
         )}

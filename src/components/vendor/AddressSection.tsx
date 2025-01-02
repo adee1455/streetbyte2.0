@@ -23,7 +23,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({ address }) => {
       if (address && typeof address === 'string' && address.trim() !== '') {
         const geocoder = new window.google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
-          if (status === "OK" && results[0]) {
+          if (status === "OK" && results && results[0]) { // Check if results is not null and has at least one item
             const { lat, lng } = results[0].geometry.location;
             setGeocodeCoordinates({ lat: lat(), lng: lng() });
             setError(null); // Reset error if geocoding is successful
@@ -36,11 +36,12 @@ export const AddressSection: React.FC<AddressSectionProps> = ({ address }) => {
         setError("Invalid address provided for geocoding.");
       }
     };
-
+  
     if (isLoaded) {
       geocodeAddress();
     }
   }, [address, isLoaded]);
+  
 
   if (loadError) {
     return <div>Error loading Google Maps</div>;

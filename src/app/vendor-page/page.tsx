@@ -1,5 +1,4 @@
-// src/app/vendor-page/page.tsx
-
+"use client";
 import React, { useState } from 'react';
 import { Star, Phone, Navigation2, PenSquareIcon } from 'lucide-react';
 import { Button } from '../../components/ui/Button';

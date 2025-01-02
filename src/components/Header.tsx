@@ -13,7 +13,7 @@ export const Header = () => {
     <header className="bg-white ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center">
+          <Link href="/home" className="flex items-center">
             <span className="text-[26px] font-semibold font-Proxima text-[#EF4443]">StreetByte</span>
           </Link>
 

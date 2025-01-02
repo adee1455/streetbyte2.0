@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import Image from 'next/image';
 
 interface ImageGalleryProps {
-  images: { image_url: string }[];  // Adjusted the type to match your API structure
+  images: string[]; // Array of strings instead of objects
 }
 
 export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
@@ -17,66 +18,77 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  if (!images || images.length === 0) {
+    return <div>No images to display</div>;
+  }
+
   return (
     <>
       <div className="relative h-56 md:h-96">
         {/* Main Image */}
-        <img
-          src={images[0]?.image_url}
+        <Image
+          src={images[0]} // Access the URL directly
           alt="Main"
           className="w-full h-full object-cover cursor-pointer"
           onClick={() => setShowModal(true)}
+          width={800} // Add dimensions for Next.js optimization
+          height={600}
         />
-        
-        {/* Thumbnail Grid */}
+
+        {/* Thumbnails */}
         {images.length > 1 && (
           <div className="absolute bottom-4 right-4 flex gap-2">
             {images.slice(1, 4).map((image, index) => (
-              <div
+              <button
                 key={index}
-                className="w-20 h-20 rounded-lg overflow-hidden cursor-pointer"
+                className="w-20 h-20 rounded-lg overflow-hidden"
                 onClick={() => {
                   setCurrentImageIndex(index + 1);
                   setShowModal(true);
                 }}
               >
-                <img
-                  src={image?.image_url}
+                <Image
+                  src={image} // Directly use the string URL
                   alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
+                  width={80}
+                  height={80}
                 />
-              </div>
+              </button>
             ))}
             {images.length > 4 && (
-              <div
-                className="w-20 h-20 rounded-lg overflow-hidden cursor-pointer relative"
+              <button
+                className="w-20 h-20 rounded-lg overflow-hidden relative"
                 onClick={() => {
                   setCurrentImageIndex(4);
                   setShowModal(true);
                 }}
               >
-                <img
-                  src={images[4]?.image_url}
+                <Image
+                  src={images[4]}
                   alt="More"
                   className="w-full h-full object-cover"
+                  width={80}
+                  height={80}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <span className="text-white font-medium">
                     +{images.length - 4}
                   </span>
                 </div>
-              </div>
+              </button>
             )}
           </div>
         )}
       </div>
 
-      {/* Full Screen Modal */}
+      {/* Full-Screen Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black">
           <button
             onClick={() => setShowModal(false)}
             className="absolute top-4 right-4 text-white p-2"
+            aria-label="Close modal"
           >
             <X className="w-6 h-6" />
           </button>
@@ -85,34 +97,26 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             <button
               onClick={handlePrevious}
               className="absolute left-4 text-white p-2"
+              aria-label="Previous image"
             >
               <ChevronLeft className="w-8 h-8" />
             </button>
 
-            <img
-              src={images[currentImageIndex]?.image_url}
+            <Image
+              src={images[currentImageIndex]}
               alt={`Image ${currentImageIndex + 1}`}
               className="max-h-[90vh] max-w-[90vw] object-contain"
+              width={800}
+              height={600}
             />
 
             <button
               onClick={handleNext}
               className="absolute right-4 text-white p-2"
+              aria-label="Next image"
             >
               <ChevronRight className="w-8 h-8" />
             </button>
-
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-2 h-2 rounded-full ${
-                    index === currentImageIndex ? 'bg-white' : 'bg-gray-500'
-                  }`}
-                  onClick={() => setCurrentImageIndex(index)}
-                />
-              ))}
-            </div>
           </div>
         </div>
       )}

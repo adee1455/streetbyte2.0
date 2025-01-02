@@ -1,26 +1,47 @@
 import { NextResponse } from "next/server";
-import { query } from "../../../lib/db";
+import { query } from "../../../lib/db"; // Assuming you're using a database query helper
 
-
+// Handle POST request for adding a vendor
 export const POST = async (req) => {
-  const { id, vendor_id, image_url } = await req.json();
-
-  if (!id || !vendor_id || !image_url) {
-    return NextResponse.json(
-      { message: 'Missing required fields' },
-      { status: 400 }
-    );
-  }
-
   try {
+    const {
+      id,
+      name,
+      foodType,
+      address,
+      contact_number,
+      rating,
+      description,
+      created_by,
+    } = await req.json();
+
+    // Validate required fields
+    if (!id || !name || !foodType || !address || !contact_number || !description) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Insert vendor into the database
+    const insertVendorQuery = `
+      INSERT INTO vendors (id, name, description, address, contact_number, rating, foodType, created_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const values = [id, name, description, address, contact_number, rating, foodType, created_by];
+
+    // Perform the insert operation
     await query({
-      query: "INSERT INTO VendorImages (id, vendor_id, image_url) VALUES (?, ?, ?)",
-      values: [id, vendor_id, image_url],
+      query: insertVendorQuery,
+      values: values,
     });
 
-    return NextResponse.json({ message: 'Vendor image added successfully' });
+    // Respond with a success message
+    return NextResponse.json({
+      message: "Vendor added successfully",
+    });
   } catch (error) {
-    console.error('Error adding vendor image:', error);
+    console.error("Error adding vendor:", error);
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
 };

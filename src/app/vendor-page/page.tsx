@@ -6,7 +6,6 @@ import { AddressSection } from '../../components/vendor/AddressSection';
 import { ImageGallery } from '../../components/vendor/ImageGallery';
 import { Modal } from '../../components/ui/Modal';
 import { Review } from '../../types';
-import { MenuItem } from '../../types';
 
 interface Vendor {
   id: string;
@@ -16,18 +15,17 @@ interface Vendor {
   contact_number: string;
   rating: string;
   foodType: string;
-  images: { image_url: string }[];
-  menu: MenuItem[];
+  images: string[];
+  menu: string[];
   reviews: Review[];
 }
 
-interface DynamicComponentProps {
+// Rename DynamicComponentProps to VendorPageProps to make it clear
+interface VendorPageProps {
   vendor: Vendor;
 }
 
-const VendorPage: React.FC<DynamicComponentProps> = ({
-  vendor,
-}) => {
+export default function VendorPage({ vendor } : VendorPageProps){
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
 
@@ -38,8 +36,11 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
 
   const closeModal = () => setIsModalOpen(false);
 
+  const safeAddress = encodeURIComponent(vendor.address || '');
+  const safePhone = encodeURIComponent(vendor.contact_number || '');
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white text-gray-950">
       {/* Image Gallery Section */}
       <ImageGallery images={vendor.images} />
 
@@ -47,9 +48,15 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
       <div className="bg-white">
         <div className="max-w-5xl mx-auto px-4 pt-4 pb-2">
           <div className="pb-4 border-b">
-            <h1 className="text-[26px] font-bold font-Proxima text-black">{vendor.name}</h1>
-            <p className="text-gray-600 text-sm font-Proxima">{vendor.foodType}</p>
-            <p className="text-gray-600 font-Proxima text-sm">{vendor.address}</p>
+            <h1 className="text-[26px] font-bold font-Proxima text-black">
+              {vendor.name}
+            </h1>
+            <p className="text-gray-600 text-sm font-Proxima">
+              {vendor.foodType}
+            </p>
+            <p className="text-gray-600 font-Proxima text-sm">
+              {vendor.address}
+            </p>
           </div>
         </div>
       </div>
@@ -58,7 +65,9 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
       <div className="max-w-5xl mx-auto pt-4 pb-2">
         <div className="px-4">
           <h2 className="font-semibold mb-3 text-lg">Description</h2>
-          <p className="px-4 text-sm text-gray-700 text-justify">{vendor.description}</p>
+          <p className="px-4 text-sm text-gray-700 text-justify">
+            {vendor.description}
+          </p>
         </div>
       </div>
 
@@ -85,10 +94,10 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
             vendor.menu.map((item, index) => (
               <img
                 key={index}
-                src={item.image_url}
+                src={item}
                 className="h-32 cursor-pointer pl-4"
                 alt={`Menu item ${index + 1}`}
-                onClick={() => openModal(item.image_url)}
+                onClick={() => openModal(item)}
               />
             ))
           ) : (
@@ -120,7 +129,15 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2"
-            onClick={() => window.open(`https://maps.google.com/?q=${vendor.address}`)}
+            onClick={() => {
+              if (vendor?.address) {
+                const googleMapsUrl = `https://maps.google.com/?q=${safeAddress}`;
+                console.log('Navigating to:', googleMapsUrl);
+                document.location.href = googleMapsUrl;
+              } else {
+                alert('Address is not available.');
+              }
+            }}
           >
             <Navigation2 className="w-4 h-4" />
             Direction
@@ -129,7 +146,15 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
           {/* Call Button */}
           <Button
             className="flex items-center justify-center gap-2"
-            onClick={() => window.open(`tel:+91${vendor.contact_number}`)}
+            onClick={() => {
+              if (vendor?.contact_number) {
+                const phoneNumber = `tel:+91${safePhone}`;
+                console.log('Calling:', phoneNumber);
+                document.location.href = phoneNumber;
+              } else {
+                alert('Contact number is not available.');
+              }
+            }}
           >
             <Phone className="w-4 h-4" />
             Call
@@ -156,7 +181,9 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
                     <span className="ml-1">{review.rating}</span>
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">{review.created_at}</span>
+                <span className="text-sm text-gray-500">
+                  {review.created_at}
+                </span>
               </div>
               <p className="text-gray-600">{review.comment}</p>
             </div>
@@ -167,4 +194,3 @@ const VendorPage: React.FC<DynamicComponentProps> = ({
   );
 };
 
-export default VendorPage;

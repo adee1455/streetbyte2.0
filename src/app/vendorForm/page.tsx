@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Camera, MapPin, Info, PhoneCallIcon, Star, User2Icon } from 'lucide-react';
@@ -22,7 +23,7 @@ interface ImgData{
   menu: FileList | null;
 }
 
-export const VendorForm = () => {
+export default function VendorForm() {
 
   const [formData, setFormData] = useState<FormData>({
     name: '',

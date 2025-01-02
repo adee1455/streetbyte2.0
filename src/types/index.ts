@@ -14,14 +14,9 @@ export interface Vendor {
   contact_number: string;
   rating: string;
   foodType: string;
-  images: { image_url: string }[];
-  menu: MenuItem[];
+  images: string[];
+  menu: string[];
   reviews: Review[];
-}
-
-export interface MenuItem {
-  id: string;
-  image_url: string;
 }
 
 export interface Review {
@@ -30,4 +25,8 @@ export interface Review {
   rating: number;
   comment: string;
   created_at: string;
+}
+
+export interface VendorPageProps {
+  vendor: Vendor;
 }

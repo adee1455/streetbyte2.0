@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Star, Clock } from 'lucide-react';
-
+import { useRouter } from 'next/navigation';
 
 interface Vendor {
   id: string;
@@ -9,10 +9,10 @@ interface Vendor {
   description: string;
   address: string;
   contact_number: string;
-  rating: string; // Keep as string since the API returns it as a string
+  rating: string; 
   foodType: string;
-  images: string[]; // Array of image IDs or URLs
-  menu: string[]; // Array of menu item IDs or names
+  images: string[]; 
+  menu: string[]; 
 }
 
 interface VendorCardProps {
@@ -20,6 +20,7 @@ interface VendorCardProps {
 }
 
 export default function VendorCard({ vendor }: VendorCardProps) {
+  const router = useRouter()
   return (
     <Link
       href={`/vendorPage/${vendor.id}`}

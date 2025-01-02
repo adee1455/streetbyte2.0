@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Remove this import as we don't need it in this case
 import dynamic from 'next/dynamic';
 import { Vendor } from '../../../types';
 
@@ -11,17 +10,16 @@ const DynamicComponent = dynamic(() => import('../../vendor-page/page'), {
 });
 
 interface VendorPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default function Page({ params }: VendorPageProps) {
+  // Unwrap `params` with React's `use` directive
+  const { id } = React.use(params);
+
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const { id } = params; // Accessing the dynamic `id` from the params prop
 
   useEffect(() => {
     const fetchVendor = async () => {
@@ -30,9 +28,9 @@ export default function Page({ params }: VendorPageProps) {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        console.log(data); 
+        console.log(data);
         if (data && typeof data === 'object' && data.id) {
           setVendor(data as Vendor);
         } else {
@@ -46,7 +44,7 @@ export default function Page({ params }: VendorPageProps) {
       }
     };
 
-    // Only fetch data when the `id` parameter is available in the URL
+    // Only fetch data when the `id` parameter is available
     if (id) {
       fetchVendor();
     }

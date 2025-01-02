@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
+import Head from "next/head";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,14 +29,22 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/svg+xml" href="/jade.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#EF4443" />
+
+        {/* Manifest Link */}
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* Service Worker Registration Script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/service-worker.js');
+                  navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                  }).catch((error) => {
+                    console.log('Service Worker registration failed:', error);
+                  });
                 });
               }
             `,

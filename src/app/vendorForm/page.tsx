@@ -220,15 +220,15 @@ const router = useRouter();
         <select
           value={formData.foodType}
           onChange={(e) => setFormData({ ...formData, foodType: e.target.value })}
-          className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+          className="mt-1 p-2 block w-full rounded-md border text-gray-800 border-gray-300 shadow-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
           required
         >
           <option value="">Select Food Type</option>
-          <option value="vegetarian">Street Food</option>
-          <option value="non-vegetarian">Fast Food</option>
-          <option value="vegan">Beverages</option>
-          <option value="gluten-free">Desserts</option>
-          <option value="gluten-free">Fine Dine</option>
+          <option value="Street Food">Street Food</option>
+          <option value="Fast Food">Fast Food</option>
+          <option value="Beverages">Beverages</option>
+          <option value="Desserts">Desserts</option>
+          <option value="Fine Dine">Fine Dine</option>
         </select>
       </div>
 
@@ -279,7 +279,7 @@ const router = useRouter();
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
-                className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 "
+                className="mt-1 text-black p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 "
                 placeholder="Describe the outlet..."
                 required
               />

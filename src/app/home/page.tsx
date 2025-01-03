@@ -9,6 +9,7 @@ import { LocationHeader } from '../../../src/components/home/LocationHeader';
 import { FloatingActionButton } from '../../../src/components/home/FloatingActionButton';
 import dynamic from 'next/dynamic';
 
+
 // Example of dynamically importing a component
 const DynamicComponent = dynamic(() => import('../../../src/components/home/VendorCard'), {
   loading: () => <p>Loading...</p>,
@@ -107,6 +108,7 @@ export default function Page() {
 
       <FloatingActionButton />
       <Navigation />
+
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Button } from '../../../components/ui/Button';
 import { AddressSection } from '../../../components/vendor/AddressSection';
 import { ImageGallery } from '../../../components/vendor/ImageGallery';
 import { Modal } from '../../../components/ui/Modal';
+import ReviewModal from '@/components/reviewModal';
 
 
 interface VendorPageProps {
@@ -21,6 +22,10 @@ export default function Page({ params }: VendorPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [isreviewModalOpen, setIsreviewModalOpen] = useState(false);
+
+
+
 
   const openModal = (image: string) => {
     setSelectedImage(image);
@@ -96,9 +101,9 @@ export default function Page({ params }: VendorPageProps) {
 
       {/* Description */}
       <div className="max-w-5xl mx-auto pt-4 pb-2">
-        <div className="px-4">
-          <h2 className="font-semibold mb-3 text-lg">Description</h2>
-          <p className="px-4 text-sm text-gray-700 text-justify">
+        <div className="px-2">
+          <h2 className="font-semibold mb-3 text-lg pl-2">Description</h2>
+          <p className="px-2 text-sm text-gray-700 text-justify">
             {vendor.description}
           </p>
         </div>
@@ -196,11 +201,17 @@ export default function Page({ params }: VendorPageProps) {
       </div>
 
       {/* Reviews Section */}
+      <ReviewModal 
+        isOpen={isreviewModalOpen}
+        onClose={() => setIsreviewModalOpen(false)}
+      />
       <div className="mt-2 px-4 py-4 pb-24">
         <div className="flex gap-2 justify-between">
           <h2 className="text-xl font-Proxima font-semibold mb-4">Reviews</h2>
           <div className="pt-1">
+            <button onClick={() => setIsreviewModalOpen(true)}>
             <PenSquareIcon className="w-5 h-5" />
+            </button>
           </div>
         </div>
         <div className="space-y-4">
@@ -208,15 +219,15 @@ export default function Page({ params }: VendorPageProps) {
             <div key={review.id} className="border-b pb-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">{review.user_id}</span>
+                  <span className="font-semibold">{review.name}</span>
                   <div className="flex items-center">
                     <Star className="w-4 h-4 fill-current text-yellow-400" />
                     <span className="ml-1">{review.rating}</span>
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">
-                  {review.created_at}
-                </span>
+                {/* <span className="text-sm text-gray-500">
+                  {review.created}
+                </span> */}
               </div>
               <p className="text-gray-600">{review.comment}</p>
             </div>

@@ -22,9 +22,10 @@ export interface Vendor {
 export interface Review {
   id: string;
   user_id: string;
+  name: string;
   rating: number;
   comment: string;
-  created_at: string;
+  created: string;
 }
 
 export interface VendorPageProps {

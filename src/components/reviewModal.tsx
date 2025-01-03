@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Star, X, ImagePlus } from 'lucide-react';
 
-export default function ReviewModal({ isOpen, onClose }) {
-  const [rating, setRating] = useState(0);
-  const [review, setReview] = useState('');
-  const [images, setImages] = useState([]);
-  const [hoveredStar, setHoveredStar] = useState(0);
+interface ReviewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface ImageFile {
+  file: File;
+  preview: string;
+}
+
+export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
+  const [rating, setRating] = useState<number>(0);
+  const [review, setReview] = useState<string>('');
+  const [images, setImages] = useState<ImageFile[]>([]);
+  const [hoveredStar, setHoveredStar] = useState<number>(0);
 
   useEffect(() => {
     // Clean up object URLs to prevent memory leaks
@@ -16,7 +26,9 @@ export default function ReviewModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    
     const files = Array.from(e.target.files).map((file) => ({
       file,
       preview: URL.createObjectURL(file),
@@ -24,14 +36,14 @@ export default function ReviewModal({ isOpen, onClose }) {
     setImages((prevImages) => [...prevImages, ...files]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log({ rating, review, images });
     // Handle form submission logic
     onClose();
   };
 
-  const removeImage = (index) => {
+  const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
     // Revoke the URL of the removed image
     URL.revokeObjectURL(images[index].preview);

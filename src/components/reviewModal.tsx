@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, X, ImagePlus } from 'lucide-react';
 import { storage } from '../lib/appwrite';
 import { ID } from 'appwrite';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -22,6 +22,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
   const [hoveredStar, setHoveredStar] = useState<number>(0);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const id = Date.now().toString();
+  const router = useRouter();
 
   useEffect(() => {
     // Clean up object URLs to prevent memory leaks
@@ -78,6 +79,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
       rating,
       review,
       created: new Date().toISOString(), // Current date in ISO format
+      reviewImages: images.map(image => image.file), // Assuming images is an array of files
     };
 
     // Insert review into the database
@@ -87,6 +89,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
     await insertReviewImages(reviewData,imageUrls);
 
     onClose(); // Close the modal after submission
+    router.push(`/vendorPage/${vendor_id}`);
   };
 
   const insertReview = async (reviewData: any) => {

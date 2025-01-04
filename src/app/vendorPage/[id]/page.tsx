@@ -75,6 +75,7 @@ export default function Page({ params }: VendorPageProps) {
   const safeAddress = encodeURIComponent(vendor?.address || '');
   const safePhone = encodeURIComponent(vendor?.contact_number || '');
   console.log(vendor?.reviews);
+
   // If the vendor data is loaded, render it here
   return (
     <div className="min-h-screen bg-white text-gray-950">
@@ -236,7 +237,8 @@ export default function Page({ params }: VendorPageProps) {
                     </div>
                     <p className="text-gray-600">{review.review}</p>
                     {/* Review Image Section */}
-                    {review.reviewImages && review.reviewImages.length > 0 && (
+
+                    {Array.isArray(review.reviewImages) && review.reviewImages.length > 0 ? (
                       <div className="flex gap-2 mt-2">
                         {review.reviewImages.map((image, index) => (
                           <img
@@ -248,7 +250,7 @@ export default function Page({ params }: VendorPageProps) {
                           />
                         ))}
                       </div>
-                    )}
+                    ) : null}
                     {/* Image Modal for Reviews */}
                     <Modal isOpen={!!selectedReviewImage} onClose={() => setSelectedReviewImage(null)}>
                       <div className="flex justify-center items-center h-full">

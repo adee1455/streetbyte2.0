@@ -47,14 +47,24 @@ export const GET = async (req) => {
       values: [id],
     });
 
-    console.log('Fetched Data:', { vendors, images, menu, reviews });
+    const reviewImages = await query({
+      query: "SELECT * FROM review_images WHERE vendor_id = ?",
+      values: [id],
+    });
+
+    console.log('Fetched Data:', { vendors, images, menu, reviews, reviewImages });
 
     // Construct response object
     const vendorWithDetails = {
       ...vendors[0],
       images: images.map((img) => img.image_url),
       menu: menu.map((item) => item.image_url),
-      reviews,
+      reviews: reviews.map((review) => ({
+        ...review,
+        reviewImages: reviewImages
+          .filter((img) => img.review_id === review.id)
+          .map((img) => img.image_url),
+      })),
     };
 
     return NextResponse.json(vendorWithDetails);

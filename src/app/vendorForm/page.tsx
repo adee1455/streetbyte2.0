@@ -43,7 +43,7 @@ export default function VendorForm() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [menuPreviews, setMenuPreviews] = useState<string[]>([]);
   const id = Date.now().toString();
- 
+
 
   
   const validateForm = () => {
@@ -81,7 +81,7 @@ export default function VendorForm() {
 
     localStorage.setItem('vendors', JSON.stringify([...existingVendors, newVendor]));
 
-    <Link href={"/home"}></Link>
+    router.push('/home');
   };
 
   const uploadImages = async (files: FileList | null): Promise<string[]> => {

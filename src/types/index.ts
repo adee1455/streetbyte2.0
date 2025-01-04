@@ -24,8 +24,9 @@ export interface Review {
   user_id: string;
   name: string;
   rating: number;
-  comment: string;
+  review: string;
   created: string;
+  reviewImages?: string[];
 }
 
 export interface VendorPageProps {

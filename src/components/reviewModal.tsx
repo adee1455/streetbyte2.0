@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Star, X, ImagePlus } from 'lucide-react';
+import { storage } from '../lib/appwrite';
+import { ID } from 'appwrite';
+import { useRouter } from 'next/router';
 
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  vendor_id: string;
 }
 
 interface ImageFile {
@@ -11,11 +15,13 @@ interface ImageFile {
   preview: string;
 }
 
-export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
+export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalProps) {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [images, setImages] = useState<ImageFile[]>([]);
   const [hoveredStar, setHoveredStar] = useState<number>(0);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const id = Date.now().toString();
 
   useEffect(() => {
     // Clean up object URLs to prevent memory leaks
@@ -34,13 +40,93 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
       preview: URL.createObjectURL(file),
     }));
     setImages((prevImages) => [...prevImages, ...files]);
+    setImagePreviews((prevPreviews) => [...prevPreviews, ...files.map(file => file.preview)]);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const uploadImages = async (files: File[]): Promise<string[]> => {
+    if (!files.length) return [];
+
+    const urls: string[] = [];
+    for (const file of files) {
+      try {
+        const response = await storage.createFile(
+          '676ab6de002caef140d0', // Replace with your actual bucket ID
+          ID.unique(),
+          file
+        );
+        const url = response.$id;
+        const imgUrl = storage.getFilePreview('676ab6de002caef140d0', url);
+        urls.push(imgUrl);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+    return urls;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ rating, review, images });
-    // Handle form submission logic
-    onClose();
+    
+    const imageUrls = await uploadImages(images.map(image => image.file)); // Upload images and get URLs
+
+    // Prepare the review data
+    const reviewData = {
+      id,
+      vendor_id,
+      user_id: '101', // Replace with actual user ID
+      name: 'Adee Shaikh', // Replace with actual user name
+      rating,
+      review,
+      created: new Date().toISOString(), // Current date in ISO format
+    };
+
+    // Insert review into the database
+    await insertReview(reviewData);
+
+    // Insert review images into the database
+    await insertReviewImages(reviewData,imageUrls);
+
+    onClose(); // Close the modal after submission
+  };
+
+  const insertReview = async (reviewData: any) => {
+    const response = await fetch('/api/review', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(reviewData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Failed to create review: ${errorData.message}`);
+    }
+  };
+
+  const insertReviewImages = async (reviewData: any, imageUrls: string[]) => {
+    for (const url of imageUrls) {
+      const imageData = {
+        id,
+        vendor_id,
+        review_id: reviewData.id, // Replace with the actual review ID after insertion
+        image_url: url,
+        created_at: new Date().toISOString(),
+      };
+
+      const response = await fetch('/api/review-images', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(imageData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to insert review image: ${errorData.message}`);
+      }
+    }
   };
 
   const removeImage = (index: number) => {
@@ -48,6 +134,7 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
     // Revoke the URL of the removed image
     URL.revokeObjectURL(images[index].preview);
     setImages(newImages);
+    setImagePreviews(newImages.map(image => image.preview));
   };
 
   return (
@@ -104,10 +191,10 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Add Photos</label>
             <div className="grid grid-cols-4 gap-2">
-              {images.map((image, index) => (
+              {imagePreviews.map((preview, index) => (
                 <div key={index} className="relative">
                   <img
-                    src={image.preview}
+                    src={preview}
                     alt={`Upload ${index + 1}`}
                     className="w-full h-20 object-cover rounded"
                   />

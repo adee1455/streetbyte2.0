@@ -6,8 +6,8 @@ export default function InstallAppBanner() {
   if (isInStandaloneMode) {
     return null; // Do not render the banner
   }
-
-  return (
+else { 
+    return (
     // showBanner && (
       <div className=" top-0 left-0 w-full bg-red-500 text-white p-3 flex justify-between items-center">
         <span className="pr-5 tracking-tighter"> x </span>
@@ -19,4 +19,5 @@ export default function InstallAppBanner() {
         </button>
       </div>
     )
+}
 }

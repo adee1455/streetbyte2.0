@@ -1,11 +1,14 @@
 import React from 'react';
 import { Camera } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
 import { Navigation } from '../layout/Navigation';
 
-export const ProfileHeader = () => {
-  const { user } = useAuthStore();
-
+interface ProfileHeaderProps {
+  name: string;
+  email: string;
+  photoURL: string;
+}
+export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, photoURL }) => {
+  console.log(photoURL);
   return (
     <div className="relative">
       <div className="h-32 bg-gradient-to-r from-red-500 to-red-600" />
@@ -14,7 +17,7 @@ export const ProfileHeader = () => {
           <div className="flex items-end">
             <div className="relative pt-5">
               <img
-                src={(user as any)?.photoURL || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=120'}
+                src={photoURL || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=120'}
                 alt="Profile"
                 className="h-32 w-32 rounded-full border-4 border-white object-cover"
               />
@@ -23,13 +26,13 @@ export const ProfileHeader = () => {
               </button>
             </div>
             <div className="ml-4 pb-4 pt-4">
-              <h1 className="text-2xl  font-bold text-gray-900">{user?.name || 'User Name'}</h1>
-              <p className="text-gray-600">{user?.email}</p>
+              <h1 className="text-2xl font-bold text-gray-900">{name || 'User Name'}</h1>
+              <p className="text-gray-600">{email}</p>
             </div>
           </div>
         </div>
       </div>
-      <Navigation/>
+      <Navigation />
     </div>
   );
 };

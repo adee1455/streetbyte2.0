@@ -4,7 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import Head from "next/head";
 import InstallAppBanner from "@/components/installComp";
-import SessionProviderWrapper from "./SessionProviderWrapper"; 
+import SessionProviderWrapper from "../components/SessionProviderWrapper"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,8 +57,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <InstallAppBanner/>
-        <Header />
         <SessionProviderWrapper>
+        <Header />
           {children}
         </SessionProviderWrapper>
       </body>

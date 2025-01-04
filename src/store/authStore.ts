@@ -1,23 +1,24 @@
-import { create } from 'zustand';
-import { User } from '../types';
+import { create } from 'zustand'; // Use named import
+import { Session } from 'next-auth';
 
 interface AuthState {
-  user: User | null;
+  user: Session | null;
   isAuthenticated: boolean;
-  login: (user: User) => void;
+  setIsAuthenticated: (value: boolean) => void;
+  login: (session: Session) => void;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  login: (user) => {
-    set({ user, isAuthenticated: true });
-    // You can also store the user data in localStorage here
-    localStorage.setItem('user', JSON.stringify(user));
+  setIsAuthenticated: (value: boolean) => set({ isAuthenticated: value }),
+  login: (session: Session) => {
+    set({ user: session, isAuthenticated: true });
+    sessionStorage.setItem('userSession', 'true');
   },
   logout: () => {
     set({ user: null, isAuthenticated: false });
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('userSession');
   },
 }));

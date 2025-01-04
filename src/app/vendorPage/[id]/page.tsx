@@ -235,17 +235,16 @@ export default function Page({ params }: VendorPageProps) {
                         {getReviewAge(review.created)}
                       </span>
                     </div>
-                    <p className="text-gray-600">{review.review}</p>
-                    {/* Review Image Section */}
+                     {/* Review Image Section */}
 
-                    {Array.isArray(review.reviewImages) && review.reviewImages.length > 0 ? (
-                      <div className="flex gap-2 mt-2">
+                     {Array.isArray(review.reviewImages) && review.reviewImages.length > 0 ? (
+                      <div className="flex gap-2 mt-3">
                         {review.reviewImages.map((image, index) => (
                           <img
                             key={index}
                             src={image}
                             alt={`Review ${index + 1}`}
-                            className="h-16 cursor-pointer"
+                            className="h-20 cursor-pointer"
                             onClick={() => setSelectedReviewImage(image)}
                           />
                         ))}
@@ -263,6 +262,9 @@ export default function Page({ params }: VendorPageProps) {
                         )}
                       </div>
                     </Modal>
+
+                    <p className="text-gray-600 pt-2">{review.review}</p>
+                   
                   </div>
                 ))}
               </div>

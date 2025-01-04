@@ -110,9 +110,9 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
   const insertReviewImages = async (reviewData: any, imageUrls: string[]) => {
     for (const url of imageUrls) {
       const imageData = {
-        id,
+        id: ID.unique(), // Generate a unique ID for each image
         vendor_id,
-        review_id: reviewData.id, // Replace with the actual review ID after insertion
+        review_id: reviewData.id, // Use the actual review ID after insertion
         image_url: url,
         created_at: new Date().toISOString(),
       };

@@ -6,6 +6,7 @@ import Head from "next/head";
 import InstallAppBanner from "@/components/installComp";
 import SessionProviderWrapper from "../components/SessionProviderWrapper"; 
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

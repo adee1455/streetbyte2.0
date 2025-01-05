@@ -7,6 +7,11 @@ export const authConfig: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          redirect_url: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+        },
+      },
     }),
   ],
   pages: {

@@ -21,9 +21,9 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, photo
                 alt="Profile"
                 className="h-32 w-32 rounded-full border-4 border-white object-cover"
               />
-              <button className="absolute bottom-0 right-0 p-1 bg-white rounded-full shadow-lg">
+              {/* <button className="absolute bottom-0 right-0 p-1 bg-white rounded-full shadow-lg">
                 <Camera className="w-5 h-5 text-gray-600" />
-              </button>
+              </button> */}
             </div>
             <div className="ml-4 pb-4 pt-4">
               <h1 className="text-2xl font-bold text-gray-900">{name || 'User Name'}</h1>

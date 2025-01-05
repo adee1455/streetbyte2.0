@@ -2,41 +2,16 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../components/ui/tabs";
-import { Chrome, Apple } from "lucide-react";
+import { Apple } from "lucide-react";
 
 export default function InstallPage() {
   const platforms = {
-    chrome: {
-      title: "Chrome Installation",
-      steps: [
-        {
-          title: "Open Chrome Menu",
-          description: "Tap the three dots (⋮) in the upper right corner of your Chrome browser.",
-          image: "/api/placeholder/600/400"
-        },
-        {
-          title: "Find Install Option",
-          description: "Look for 'Add to Home screen' or 'Install app' in the dropdown menu.",
-          image: "/api/placeholder/600/400"
-        },
-        {
-          title: "Customize Installation",
-          description: "You can customize the app name that will appear on your home screen.",
-          image: "/api/placeholder/600/400"
-        },
-        {
-          title: "Confirm Installation",
-          description: "Tap 'Add' or 'Install' to complete the process. The app icon will appear on your home screen.",
-          image: "/api/placeholder/600/400"
-        }
-      ]
-    },
     safari: {
-      title: "Safari Installation",
+      title: "iOS Installation",
       steps: [
         {
           title: "Open Share Menu",
-          description: "Tap the Share button at the bottom of your Safari browser.",
+          description: "Tap the Share button at the bottom of your browser.",
           image: "/1st.png"
         },
         {
@@ -53,36 +28,24 @@ export default function InstallPage() {
     }
   };
 
-  const [activeTab, setActiveTab] = useState('chrome');
+  const [activeTab, setActiveTab] = useState('safari');
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
 
-    if (/Chrome/i.test(userAgent) && !/Edg/i.test(userAgent) && !/OPR/i.test(userAgent)) {
-      setActiveTab('chrome'); // Chrome-based browser
-    } else if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent) && !/Edg/i.test(userAgent)) {
+    if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent) && !/Edg/i.test(userAgent)) {
       setActiveTab('safari'); // Safari
     } else {
-      setActiveTab('chrome'); // Default to Chrome if not detected
+      setActiveTab('safari'); // Default to Safari if not detected
     }
   }, []);
-
-  const chromeInstructions = platforms.chrome.steps.map((step, index) => (
-    <Card key={index} className="overflow-hidden mb-4">
-      <CardContent className="p-6">
-        <h3 className="font-semibold text-lg text-red-600">{step.title}</h3>
-        <p className="text-gray-700 mt-1">{step.description}</p>
-        <img src={step.image} alt={step.title} className="rounded-lg shadow-md w-full" />
-      </CardContent>
-    </Card>
-  ));
 
   const safariInstructions = platforms.safari.steps.map((step, index) => (
     <Card key={index} className="overflow-hidden mb-4">
       <CardContent className="p-6">
         <h3 className="font-semibold text-lg text-red-600">{step.title}</h3>
         <p className="text-gray-700 mt-1">{step.description}</p>
-        <img src={step.image} alt={step.title} className="rounded-lg shadow-md w-full" />
+        <img src={step.image} alt={step.title} className="rounded-lg shadow-md w-full mt-2" />
       </CardContent>
     </Card>
   ));
@@ -102,22 +65,13 @@ export default function InstallPage() {
             </p>
             
             <Tabs defaultValue={activeTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="chrome" className="flex items-center gap-2">
-                  <Chrome className="h-4 w-4" />
-                  Chrome
-                </TabsTrigger>
+              <TabsList className="grid w-full grid-cols-1 mb-8">
                 <TabsTrigger value="safari" className="flex items-center gap-2">
                   <Apple className="h-4 w-4" />
-                  Safari
+                  iOS
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="chrome">
-                <div className="space-y-8">
-                  {chromeInstructions}
-                </div>
-              </TabsContent>
               <TabsContent value="safari">
                 <div className="space-y-8">
                   {safariInstructions}

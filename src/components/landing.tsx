@@ -78,6 +78,11 @@ export default function Landing(){
         </div>
 
         <div className='bg-white h-full mt-2'>
+
+        <div className=''>
+                    <img src="/hero.jpeg" alt="" />
+                </div>
+                
   <div className="px-4 py-6 bg-gradient-to-b from-white to-gray-100">
     <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-extrabold text-[#EF4443] mb-6">Find the Best Food Spots Near You</h2>

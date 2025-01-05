@@ -8,11 +8,18 @@ import { storage } from '../../../src/lib/appwrite';
 import { ID } from 'appwrite';
 import { link } from 'fs';
 import { useRouter } from 'next/navigation';
+import { LocationInput } from '@/components/landing/LocationInput';
+import { Loader2 } from 'lucide-react';
+import { useLocationStore } from '../../store/locationStore';
+import { searchCity, checkCityAvailability } from '../../services/locationService';
+import { useDebounce } from '../../hooks/useDebounce';
+
 
 interface FormData {
   name: string;
   foodType: string;
   address: string;
+  city: string;
   rating: string;
   contact_number: string;
   description: string;
@@ -29,6 +36,7 @@ export default function VendorForm() {
     name: '',
     description: '',
     address: '',
+    city: '',
     contact_number: '',
     rating: '',
     foodType: '',
@@ -43,16 +51,52 @@ export default function VendorForm() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [menuPreviews, setMenuPreviews] = useState<string[]>([]);
   const id = Date.now().toString();
+  const [selectedCity, setSelectedCity] = useState<string>('');
+
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const debouncedQuery = useDebounce(query, 300);
+  const { setCity } = useLocationStore();
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (debouncedQuery.length < 3) {
+        setSuggestions([]);
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const cities = await searchCity(debouncedQuery);
+        setSuggestions(cities);
+      } catch (err) {
+        console.error('Failed to fetch city suggestions:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuggestions();
+  }, [debouncedQuery]);
+
+  const handleCitySelect = (cityName: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setQuery(cityName);
+    setSuggestions([]);
+    setFormData(prev => ({ ...prev, city: cityName }));
+    console.log("Selected city:", cityName);
+  };
 
 
-  
   const validateForm = () => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
 
     if (!formData.name) newErrors.name = 'Name is required';
     if (!formData.foodType) newErrors.foodType = 'Food type is required';
     if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.contact_number) newErrors.contact_number = 'Phone number is required';
+    if (!formData.city) newErrors.city = 'City is required';
     if (!formData.description) newErrors.description = 'Description is required';
 
     setErrors(newErrors);
@@ -61,16 +105,22 @@ export default function VendorForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted with data:", formData);
 
-    if (!validateForm()) return;
+    if (!validateForm()) {
+        console.log("Validation failed");
+        return;
+    }
 
     const existingVendors = JSON.parse(localStorage.getItem('vendors') || '[]');
    
     const newVendor = {
-      id,
-      ...formData,
-      created_by: formData.created_by || 101,
+        id: Date.now().toString(),
+        ...formData,
+        created_by: formData.created_by || 101,
     };
+
+    console.log("Submitting vendor with data:", newVendor);
 
     // Upload vendor images
     const vendorImageUrls = await uploadImages(ImgData.images);
@@ -78,6 +128,8 @@ export default function VendorForm() {
 
     // Insert vendor into the database
     await insertVendor(newVendor, vendorImageUrls, menuImageUrls);
+
+    console.log(`New vendor added at: ${new Date().toLocaleString()}`);
 
     localStorage.setItem('vendors', JSON.stringify([...existingVendors, newVendor]));
 
@@ -123,7 +175,7 @@ export default function VendorForm() {
   
     const vendorData = await response.json();
     // const vendorId = vendorData.id; // Get the newly created vendor ID
-  
+
     // Insert vendor images
     for (const url of vendorImageUrls) {
       const imageData = {
@@ -242,6 +294,46 @@ const router = useRouter();
         required
       />
 
+      <div>
+      <div className="relative z-10">
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 w-5 h-5" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Enter your city"
+            className="w-full pl-10 pr-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+          />
+          {loading && (
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-900 animate-spin" />
+          )}
+        </div>
+
+        {suggestions.length > 0 && (
+          <div className="absolute w-full mt-2 bg-white rounded-lg shadow-lg border text-gray-900 border-gray-200 max-h-60 overflow-y-auto z-20">
+            {suggestions.map((city, index) => (
+              <button
+                type="button"
+                key={index}
+                onClick={(event) => handleCitySelect(city.name, event)}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+              >
+                <span className="font-medium">{city.name}</span>
+                <span className="text-sm text-gray-500 ml-2">{city.fullName}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      </div>
+       
+
+
+
+
+
+
       <Input
         label="Phone Number"
         icon={<PhoneCallIcon className="w-4 h-4" />}
@@ -262,7 +354,7 @@ const router = useRouter();
         required
       />
 
-      <Input
+      {/* <Input
         label="createdby"
         icon={<User2Icon className="w-5 h-5" />}
         placeholder='Your Name'
@@ -270,7 +362,7 @@ const router = useRouter();
         onChange={(e) => setFormData({ ...formData, created_by: e.target.value })}
         error={errors.created_by}
         required
-      />
+      /> */}
         <div>
                <label className="block text-sm font-medium text-gray-700 mb-2">
 
@@ -285,8 +377,6 @@ const router = useRouter();
               />
             </div>
             
-      
-      
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Menu</label>
@@ -336,3 +426,4 @@ const router = useRouter();
     </form>
   );
 };
+

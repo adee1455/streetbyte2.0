@@ -1,24 +1,37 @@
 import axios from 'axios';
 import { mockCityData } from '../data/mockCityData';
 
-const NOMINATIM_API = 'https://nominatim.openstreetmap.org/search';
+const GEONAMES_API = 'http://api.geonames.org/searchJSON';
+
+import { useRouter } from 'next/navigation';
 
 export const searchCity = async (query: string) => {
   try {
-    const response = await axios.get(NOMINATIM_API, {
+    const response = await axios.get(GEONAMES_API, {
       params: {
-        q: `${query}, India`,
-        format: 'json',
-        countrycodes: 'in',
-        limit: 5,
+        q: query,
+        maxRows: 10,
+        username: 'adeeshaikh',
+        featureClass: 'P',
+        country: 'IN',
       },
     });
 
-    return response.data.map((item: any) => ({
-      name: item.display_name.split(',')[0],
-      fullName: item.display_name,
+    const uniqueCityNames = Array.from(new Set(response.data.geonames.map((item: any) => item.name)));
+
+    const uniqueCities = uniqueCityNames.map(name => {
+      return response.data.geonames.find((item: any) => item.name === name);
+    }).filter(item => item !== undefined);
+
+    const filteredCities = uniqueCities.filter(city => 
+      city.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    return filteredCities.map((item: any) => ({
+      name: item.name,
+      fullName: `${item.name}, ${item.adminName1}`,
       lat: item.lat,
-      lon: item.lon,
+      lon: item.lng,
     }));
   } catch (error) {
     console.error('Error fetching cities:', error);
@@ -26,9 +39,6 @@ export const searchCity = async (query: string) => {
   }
 };
 
-export const checkCityAvailability = (cityName: string) => {
-  // In a real app, this would be an API call
-  return mockCityData.some(
-    (city) => city.name.toLowerCase() === cityName.toLowerCase()
-  );
+export const checkCityAvailability = async (cityName: string) => {
+
 };

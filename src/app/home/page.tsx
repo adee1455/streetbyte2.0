@@ -8,20 +8,20 @@ import { Navigation } from '../../../src/components/layout/Navigation';
 import { LocationHeader } from '../../../src/components/home/LocationHeader';
 import { FloatingActionButton } from '../../../src/components/home/FloatingActionButton';
 import dynamic from 'next/dynamic';
+import { useLocationStore } from '../../store/locationStore';
 
-
-// Example of dynamically importing a component
 const DynamicComponent = dynamic(() => import('../../../src/components/home/VendorCard'), {
   loading: () => <p>Loading...</p>,
-  ssr: false, // Disable server-side rendering
+  ssr: false,
 });
+
 interface Card {
   id: string;
   name: string;
   description: string;
   address: string;
   contact_number: string;
-  rating: string; // Keep as string since the API returns it as a string
+  rating: string;
   foodType: string;
   images: string[];
   menu: string[];
@@ -29,13 +29,18 @@ interface Card {
 
 export default function Page() {
   const [cards, setCards] = useState<Card[]>([]);
-  const [loading, setLoading] = useState(true); // Initial state should be true for loading
-  const [error, setError] = useState<string | null>(null); // Error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { city } = useLocationStore();
 
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const response = await fetch(`/api/cards`);
+        if (!city) {
+          throw new Error("City is not selected");
+        }
+
+        const response = await fetch(`/api/cards?city=${encodeURIComponent(city)}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -55,15 +60,20 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Error fetching cards:", error);
-        setError("Unable to load vendors. Please try again later.");
-        setCards([]); // Optionally set cards to an empty list on error
+        setError(error instanceof Error ? error.message : "Unable to load vendors. Please try again later.");
+        setCards([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCards();
-  }, []);
+    if (city) {
+      fetchCards();
+    } else {
+      setError("Please select a city first");
+      setLoading(false);
+    }
+  }, [city]);
 
   return (
     <div className="pb-16 md:pb-0">
@@ -81,7 +91,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-900">Popular Near You</h2>
@@ -92,13 +101,13 @@ export default function Page() {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {loading ? (
-            <div className="text-center">Loading...</div> // You can replace this with a spinner or skeleton
+            <div className="text-center">Loading...</div>
           ) : error ? (
-            <div className="text-center text-red-500">{error}</div> // Show error message if any
+            <div className="text-center text-red-500">{error}</div>
           ) : (
             cards.map((card) => (
               <DynamicComponent
-                key={card.id} // Use the card's id as a unique key
+                key={card.id}
                 vendor={card}
               />
             ))
@@ -108,7 +117,6 @@ export default function Page() {
 
       <FloatingActionButton />
       <Navigation />
-
     </div>
   );
-};
+}

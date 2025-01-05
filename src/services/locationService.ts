@@ -1,21 +1,30 @@
 import axios from 'axios';
 import { mockCityData } from '../data/mockCityData';
 
-const GEONAMES_API = 'http://api.geonames.org/searchJSON';
-
-import { useRouter } from 'next/navigation';
+const GEONAMES_API = 'https://secure.geonames.org/searchJSON';
+const FALLBACK_GEONAMES_API = 'https://api.geonames.org/searchJSON';
 
 export const searchCity = async (query: string) => {
   try {
-    const response = await axios.get(GEONAMES_API, {
-      params: {
-        q: query,
-        maxRows: 10,
-        username: 'adeeshaikh',
-        featureClass: 'P',
-        country: 'IN',
-      },
-    });
+    const makeRequest = async (url: string) => {
+      return await axios.get(url, {
+        params: {
+          q: query,
+          maxRows: 10,
+          username: 'adeeshaikh',
+          featureClass: 'P',
+          country: 'IN',
+        },
+      });
+    };
+
+    let response;
+    try {
+      response = await makeRequest(GEONAMES_API);
+    } catch (primaryError) {
+      console.warn('Primary GeoNames API failed, trying fallback:', primaryError);
+      response = await makeRequest(FALLBACK_GEONAMES_API);
+    }
 
     const uniqueCityNames = Array.from(new Set(response.data.geonames.map((item: any) => item.name)));
 
@@ -35,10 +44,9 @@ export const searchCity = async (query: string) => {
     }));
   } catch (error) {
     console.error('Error fetching cities:', error);
-    return [];
+    // Return mock data as fallback in case of complete failure
+    return mockCityData.filter(city => 
+      city.name.toLowerCase().includes(query.toLowerCase())
+    );
   }
-};
-
-export const checkCityAvailability = async (cityName: string) => {
-
 };

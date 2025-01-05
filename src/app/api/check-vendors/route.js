@@ -1,3 +1,4 @@
+import { NextResponse } from 'next/server';
 import { query } from "../../../lib/db";
 
 export const GET = async (req) => {
@@ -10,9 +11,9 @@ export const GET = async (req) => {
       values: [city],
     });
 
-    return new Response(JSON.stringify(result[0].count > 0));
+    return NextResponse.json(result[0].count > 0);
   } catch (error) {
     console.error("Error checking city availability:", error);
-    return new Response(JSON.stringify(false), { status: 500 });
+    return NextResponse.json(false, { status: 500 });
   }
 };

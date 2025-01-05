@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Loader2, AlertCircle } from 'lucide-react';
 import { useLocationStore } from '../../store/locationStore';
-import { searchCity, checkCityAvailability } from '../../services/locationService';
+import { searchCity } from '../../services/locationService';
 import { useDebounce } from '../../hooks/useDebounce';
 import { CityUnavailableModal } from './CityUnavailableModal';
 
@@ -30,14 +30,18 @@ export const LocationInput = () => {
         setError(null);
         return;
       }
-
+  
       setLoading(true);
       setError(null);
-
+  
       try {
         const cities = await searchCity(debouncedQuery);
-        setSuggestions(cities);
-       
+        // Transform the response to match City interface
+        const transformedCities: City[] = cities.map(city => ({
+          name: city.name,
+          fullName: 'fullName' in city ? city.fullName : `${city.name}${city.available ? ' (Available)' : ''}`
+        }));
+        setSuggestions(transformedCities);
       } catch (err) {
         console.error('Failed to fetch city suggestions:', err);
         setError('Failed to fetch city suggestions. Please try again.');
@@ -46,7 +50,7 @@ export const LocationInput = () => {
         setLoading(false);
       }
     };
-
+  
     fetchSuggestions();
   }, [debouncedQuery]);
 

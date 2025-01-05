@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { LocationInput } from '@/components/landing/LocationInput';
 import { Loader2 } from 'lucide-react';
 import { useLocationStore } from '../../store/locationStore';
-import { searchCity, checkCityAvailability } from '../../services/locationService';
+import { searchCity } from '../../services/locationService';
 import { useDebounce } from '../../hooks/useDebounce';
 
 

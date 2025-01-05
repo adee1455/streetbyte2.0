@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Loader2 } from 'lucide-react';
 import { useLocationStore } from '../store/locationStore';
-import { searchCity, checkCityAvailability } from '../services/locationService';
+import { searchCity } from '../services/locationService';
 import { useDebounce } from '../hooks/useDebounce';
 
 interface FormCityProps {

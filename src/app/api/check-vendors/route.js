@@ -17,3 +17,4 @@ export const GET = async (req) => {
     return NextResponse.json(false, { status: 500 });
   }
 };
+

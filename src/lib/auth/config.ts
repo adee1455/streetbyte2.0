@@ -9,7 +9,7 @@ export const authConfig: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          redirect_url: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
         },
       },
     }),
@@ -18,4 +18,5 @@ export const authConfig: AuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: authCallbacks,
+  secret: process.env.NEXTAUTH_SECRET
 };

@@ -6,52 +6,46 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: string }>;
 }
 
-interface Navigator {
-  standalone?: boolean;
-}
-
 export default function InstallAppBanner() {
   const [showBanner, setShowBanner] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowBanner(true);
-      console.log('beforeinstallprompt event fired');
+    const handleBeforeInstallPrompt = (e: Event) => {
+      const beforeInstallPromptEvent = e as BeforeInstallPromptEvent; // Cast to BeforeInstallPromptEvent
+      beforeInstallPromptEvent.preventDefault(); // Prevent automatic prompt
+      setDeferredPrompt(beforeInstallPromptEvent); // Save the event for triggering later
+      setShowBanner(true); // Show the banner
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
   }, []);
 
   useEffect(() => {
     const dismissed = localStorage.getItem('installBannerDismissed');
-    if (dismissed) {
+    if (dismissed === 'true') {
       setShowBanner(false);
     }
   }, []);
-  
+
   const handleClose = () => {
     setShowBanner(false);
     localStorage.setItem('installBannerDismissed', 'true');
   };
-  
 
-  const handleInstallClick = () => {
+  const handleInstallClick = async () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-        setDeferredPrompt(null);
-        setShowBanner(false);
-      });
+      await deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      setDeferredPrompt(null);
+      setShowBanner(false);
     }
   };
 
@@ -59,18 +53,15 @@ export default function InstallAppBanner() {
     typeof window !== 'undefined' &&
     (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone);
 
-  console.log('isInStandaloneMode:', isInStandaloneMode);
-  console.log('showBanner:', showBanner);
-
-  if (isInStandaloneMode) {
+  if (isInStandaloneMode || !showBanner) {
     return null;
   }
 
   return (
-    <div className="top-0 left-0 w-full bg-red-500 text-white p-3 flex justify-between items-center">
+    <div className="top-0 left-0 w-full bg-red-500 text-white p-3 flex justify-between items-center z-50">
       <span
         className="pr-5 tracking-tighter cursor-pointer"
-        onClick={() => setShowBanner(false)}
+        onClick={handleClose}
       >
         x
       </span>

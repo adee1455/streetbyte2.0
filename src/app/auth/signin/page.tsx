@@ -1,15 +1,9 @@
 'use client';
 
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-type FormData = {
-  fullName?: string;
-  email: string;
-  password: string;
-};
+import { Utensils, Star, Sparkles } from 'lucide-react';
 
 const AuthPage = () => {
   const router = useRouter();
@@ -17,44 +11,59 @@ const AuthPage = () => {
 
   const handleGoogleSignIn = async () => {
     const result = await signIn("google", { callbackUrl: "/home" });
-    
     if (result?.error) {
       setError(result.error);
-    } else {
-      // Redirect to dashboard after successful login
-      
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg transition-transform transform hover:scale-105">
-        <h2 className="text-3xl font-extrabold text-center text-gray-800">
-          Welcome Back!
-        </h2>
-        <p className="text-center text-gray-600">
-          Sign in to access your dashboard and manage your account.
-        </p>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+    <div className="flex items-center justify-center bg-white">
+      <div className="w-full max-w-md p-8 ">
+        <div className="space-y-4 mb-6">
+          <h2 className="text-3xl font-bold text-[#EF4443] text-center">
+            Discover Local Food
+          </h2>
+          <p className="text-gray-600 text-center text-md">
+            Join our community of food enthusiasts
+          </p>
+        </div>
+
+        {error && (
+          <div className="p-4 mb-6 rounded-lg bg-red-50 text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+
         <button
           onClick={handleGoogleSignIn}
-          className="w-full py-3 mt-4 text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:ring-red-500 transition duration-200 ease-in-out flex items-center justify-center"
+          className="w-full flex items-center justify-center px-4 py-3 mb-6 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
         >
-          <svg
-            className="w-5 h-5 mr-2"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 48 48"
-            fill="currentColor"
-          >
-            <path d="M23.49 12.27c-.01-.01-.01-.01-.02-.02-1.1-.01-2.16.1-3.19.3-1.03.2-2.01.5-2.93.9-.92.4-1.76.9-2.54 1.5-.78.6-1.45 1.3-2.01 2.1-.56.8-.97 1.7-1.25 2.7-.28 1-.42 2.1-.42 3.2 0 1.1.14 2.2.42 3.2.28 1 .69 1.9 1.25 2.7.56.8 1.23 1.5 2.01 2.1.78.6 1.62 1.1 2.54 1.5.92.4 1.9.7 2.93.9 1.03.2 2.09.3 3.19.3.01 0 .01 0 .02-.01 1.1 0 2.16-.1 3.19-.3 1.03-.2 2.01-.5 2.93-.9.92-.4 1.76-.9 2.54-1.5.78-.6 1.45-1.3 2.01-2.1.56-.8.97-1.7 1.25-2.7.28-1 .42-2.1.42-3.2 0-1.1-.14-2.2-.42-3.2-.28-1-.69-1.9-1.25-2.7-.56-.8-1.23-1.5-2.01-2.1-.78-.6-1.62-1.1-2.54-1.5-.92-.4-1.9-.7-2.93-.9-1.03-.2-2.09-.3-3.19-.3z" />
+          <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48" fill="currentColor">
+            <path d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
           </svg>
           Continue with Google
         </button>
-        <p className="text-center text-gray-500 text-sm">
-          Don't have an account?{" "}
-          <a href="/signup" className="text-blue-500 hover:underline">
-            Sign up here
-          </a>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-800">Member Benefits</h3>
+          <div className="space-y-3">
+            <div className="flex items-center text-gray-600">
+              <Utensils className="w-5 h-5 mr-3 text-indigo-600" />
+              <span>Add new food places</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <Star className="w-5 h-5 mr-3 text-indigo-600" />
+              <span>Share your food reviews</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <Sparkles className="w-5 h-5 mr-3 text-indigo-600" />
+              <span>Access upcoming features first</span>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-6 text-xs text-center text-gray-500">
+          By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>
     </div>

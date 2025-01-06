@@ -33,47 +33,51 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const { city } = useLocationStore();
 
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        if (!city) {
-          throw new Error("City is not selected");
-        }
-
-        const response = await fetch(`/api/cards?city=${encodeURIComponent(city)}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          const text = await response.text();
-          console.error("Response was not JSON:", text);
-          throw new TypeError("Oops, we haven't got JSON!");
-        }
-
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setCards(data);
-        } else {
-          throw new Error("Invalid data format received.");
-        }
-      } catch (error) {
-        console.error("Error fetching cards:", error);
-        setError(error instanceof Error ? error.message : "Unable to load vendors. Please try again later.");
-        setCards([]);
-      } finally {
-        setLoading(false);
+  const fetchCards = async (selectedCity: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/cards?city=${encodeURIComponent(selectedCity)}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
 
-    if (city) {
-      fetchCards();
-    } else {
-      setError("Please select a city first");
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Response was not JSON:", text);
+        throw new TypeError("Oops, we haven't got JSON!");
+      }
+
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setCards(data);
+      } else {
+        throw new Error("Invalid data format received.");
+      }
+    } catch (error) {
+      console.error("Error fetching cards:", error);
+      setError(error instanceof Error ? error.message : "Unable to load vendors. Please try again later.");
+      setCards([]);
+    } finally {
       setLoading(false);
     }
-  }, [city]);
+  };
+
+  // Initial load
+  useEffect(() => {
+    // Check localStorage directly for initial load
+    const storedCity = localStorage.getItem('selectedCity');
+    if (storedCity) {
+      fetchCards(storedCity);
+    }
+  }, []); // Empty dependency array for initial load
+
+  // React to city changes
+  useEffect(() => {
+    if (city) {
+      fetchCards(city);
+    }
+  }, [city]); // Dependency on city changes
 
   return (
     <div className="pb-16 md:pb-0">

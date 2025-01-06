@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import Head from "next/head";
 import InstallAppBanner from "@/components/installComp";
 import SessionProviderWrapper from "../components/SessionProviderWrapper"; 
+import ClientLayout from './ClientLayout';
 
 
 const geistSans = Geist({
@@ -57,11 +58,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <InstallAppBanner/>
-        <SessionProviderWrapper>
-        <Header />
-          {children}
-        </SessionProviderWrapper>
+        <ClientLayout>
+          <InstallAppBanner/>
+          <SessionProviderWrapper>
+            <Header />
+            {children}
+          </SessionProviderWrapper>
+        </ClientLayout>
       </body>
     </html>
   );

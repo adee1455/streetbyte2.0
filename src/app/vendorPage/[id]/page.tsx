@@ -35,7 +35,7 @@ export default function Page({ params }: VendorPageProps) {
   };
 
   const closeModal = () => { setIsModalOpen(false);
-    router.refresh();
+    router.push(`/vendorPage/${id}`);
   }
 
   useEffect(() => {

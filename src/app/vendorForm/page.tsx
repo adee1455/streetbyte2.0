@@ -125,7 +125,7 @@ export default function VendorForm() {
       const newVendor = {
           id: Date.now().toString(),
           ...formData,
-          created_by: formData.created_by || 101,
+          created_by: session?.user.name,
       };
 
       console.log("Submitting vendor with data:", newVendor);

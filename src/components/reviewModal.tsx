@@ -3,6 +3,7 @@ import { Star, X, ImagePlus } from 'lucide-react';
 import { storage } from '../lib/appwrite';
 import { ID } from 'appwrite';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -16,6 +17,10 @@ interface ImageFile {
 }
 
 export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalProps) {
+
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [images, setImages] = useState<ImageFile[]>([]);
@@ -74,8 +79,8 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
     const reviewData = {
       id,
       vendor_id,
-      user_id: '101', // Replace with actual user ID
-      name: 'Adee Shaikh', // Replace with actual user name
+      user_id: session?.user.id, // Replace with actual user ID
+      name: session?.user.name, // Replace with actual user name
       rating,
       review,
       created: new Date().toISOString(), // Current date in ISO format

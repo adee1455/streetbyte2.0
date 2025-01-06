@@ -149,34 +149,34 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
-  // if (!isAuthenticated) {
-  //   return (
-  //     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-  //       <div className="bg-white rounded-lg w-full max-w-md p-8">
-  //         <div className="text-center space-y-4">
-  //           <h3 className="text-lg font-medium text-gray-900">Authentication Required</h3>
-  //           <p className="text-sm text-gray-500">
-  //             Please login to your account to add a review
-  //           </p>
-  //           <div className="mt-5">
-  //             <button
-  //               onClick={() => router.push('/auth/signin')}
-  //               className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
-  //             >
-  //               Login to Continue
-  //             </button>
-  //             <button
-  //               onClick={onClose}
-  //               className="w-full mt-3 text-gray-600 hover:text-gray-800"
-  //             >
-  //               Cancel
-  //             </button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-lg w-full max-w-md p-8">
+          <div className="text-center space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">Authentication Required</h3>
+            <p className="text-sm text-gray-500">
+              Please login to your account to add a review
+            </p>
+            <div className="mt-5">
+              <button
+                onClick={() => router.push('/auth/signin')}
+                className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
+              >
+                Login to Continue
+              </button>
+              <button
+                onClick={onClose}
+                className="w-full mt-3 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">

@@ -8,7 +8,7 @@ import { ImageGallery } from '../../../components/vendor/ImageGallery';
 import { Modal } from '../../../components/ui/Modal';
 import ReviewModal from '@/components/reviewModal';
 import { formatDistanceToNow } from 'date-fns';
-
+import { useRouter } from 'next/navigation';
 
 interface VendorPageProps {
   params: Promise<{ id: string }>;
@@ -25,7 +25,7 @@ export default function Page({ params }: VendorPageProps) {
   const [selectedImage, setSelectedImage] = useState('');
   const [isreviewModalOpen, setIsreviewModalOpen] = useState(false);
   const [selectedReviewImage, setSelectedReviewImage] = useState<string | null>(null);
-
+  const router = useRouter();
 
 
 
@@ -34,7 +34,9 @@ export default function Page({ params }: VendorPageProps) {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => { setIsModalOpen(false);
+    router.refresh();
+  }
 
   useEffect(() => {
     const fetchVendor = async () => {

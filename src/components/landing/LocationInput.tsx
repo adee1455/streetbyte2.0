@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Loader2, AlertCircle } from 'lucide-react';
-import { useLocationStore } from '../../store/locationStore';
+import { useLocationStore } from '@/store/locationStore';
 import { searchCity } from '../../services/locationService';
 import { useDebounce } from '../../hooks/useDebounce';
 import { CityUnavailableModal } from './CityUnavailableModal';
@@ -21,7 +21,7 @@ export const LocationInput = () => {
   const [selectedCity, setSelectedCity] = useState<string>('');
   const [showUnavailableModal, setShowUnavailableModal] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
-  const { setCity } = useLocationStore();
+  const setCity = useLocationStore(state => state.setCity);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -54,23 +54,9 @@ export const LocationInput = () => {
     fetchSuggestions();
   }, [debouncedQuery]);
 
-  const handleCitySelect = async (cityName: string) => {
-    setSelectedCity(cityName);
-  
-    try {
-      const response = await fetch(`/api/check-vendors?city=${encodeURIComponent(cityName)}`);
-      const isAvailable = await response.json();
-  
-      if (isAvailable) {
-        setCity(cityName);
-        router.push("/home");
-      } else {
-        setShowUnavailableModal(true);
-      }
-    } catch (error) {
-      console.error("Error checking city availability:", error);
-      setShowUnavailableModal(true); // Show modal in case of an API error
-    }
+  const handleCitySelect = (city: string) => {
+    setCity(city);
+    router.push('/home'); // Redirect to home page after city selection
   };
   
   

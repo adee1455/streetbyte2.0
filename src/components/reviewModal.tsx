@@ -4,6 +4,7 @@ import { storage } from '../lib/appwrite';
 import { ID } from 'appwrite';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { profile } from 'console';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -88,6 +89,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
         vendor_id,
         user_id: session?.user.id || '101',
         name: session?.user.name,
+        profile: session?.user.image,
         rating,
         review,
         created: new Date().toISOString(),

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { query } from "../../../lib/db";
 
 export const POST = async (req) => {
-    const { id, vendor_id, user_id, name, rating, review, created } = await req.json();
+    const { id, vendor_id, user_id, name, profile, rating, review, created } = await req.json();
 
   if (!id || !vendor_id || !user_id || !rating || !review) {
     return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
@@ -10,8 +10,8 @@ export const POST = async (req) => {
 
   try {
     await query({
-      query: "INSERT INTO reviews (id, vendor_id, user_id, name, rating, review, created) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      values: [id, vendor_id, user_id, name, rating, review, created],
+      query: "INSERT INTO reviews (id, vendor_id, user_id, name, profile, rating, review, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      values: [id, vendor_id, user_id, name, profile, rating, review, created],
     });
 
     return NextResponse.json({ message: "Review added successfully" });

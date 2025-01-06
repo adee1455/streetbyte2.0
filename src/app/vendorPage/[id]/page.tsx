@@ -222,9 +222,17 @@ export default function Page({ params }: VendorPageProps) {
               </div>
               <div className="space-y-4">
                 {vendor.reviews.map((review) => (
-                  <div key={review.id} className="border-b pb-4">
+                    <div key={review.id} className="border-b pb-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
+                        {/* Add profile picture */}
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                          <img
+                            src={review.profile } // Add a default avatar fallback
+                            alt={`${review.name}'s profile`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <span className="font-semibold">{review.name}</span>
                         <div className="flex items-center">
                           <Star className="w-4 h-4 fill-current text-yellow-400" />
@@ -333,5 +341,4 @@ const getReviewAge = (dateString: string) => {
     return `${months} month${months !== 1 ? 's' : ''} old`;
   }
 };
-
 

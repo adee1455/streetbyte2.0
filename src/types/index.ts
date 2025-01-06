@@ -9,6 +9,7 @@ export interface User {
 export interface Vendor {
   id: string;
   name: string;
+  profile: string;
   description: string;
   address: string;
   contact_number: string;
@@ -23,6 +24,7 @@ export interface Review {
   id: string;
   user_id: string;
   name: string;
+  profile: string;
   rating: number;
   review: string;
   created: string;

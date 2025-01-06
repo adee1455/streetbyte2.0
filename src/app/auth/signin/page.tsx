@@ -45,18 +45,18 @@ const AuthPage = () => {
         </button>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Member Benefits</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Login Benefits</h3>
           <div className="space-y-3">
             <div className="flex items-center text-gray-600">
-              <Utensils className="w-5 h-5 mr-3 text-indigo-600" />
+              <Utensils className="w-5 h-5 mr-3 text-[#EF4443]" />
               <span>Add new food places</span>
             </div>
             <div className="flex items-center text-gray-600">
-              <Star className="w-5 h-5 mr-3 text-indigo-600" />
+              <Star className="w-5 h-5 mr-3 text-[#EF4443]" />
               <span>Share your food reviews</span>
             </div>
             <div className="flex items-center text-gray-600">
-              <Sparkles className="w-5 h-5 mr-3 text-indigo-600" />
+              <Sparkles className="w-5 h-5 mr-3 text-[#EF4443]" />
               <span>Access upcoming features first</span>
             </div>
           </div>

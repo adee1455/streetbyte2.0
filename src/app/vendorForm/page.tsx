@@ -61,6 +61,7 @@ export default function VendorForm() {
   const [loading, setLoading] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
   const { setCity } = useLocationStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -106,6 +107,7 @@ export default function VendorForm() {
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted with data:", formData);
@@ -115,28 +117,37 @@ export default function VendorForm() {
         return;
     }
 
-    const existingVendors = JSON.parse(localStorage.getItem('vendors') || '[]');
-   
-    const newVendor = {
-        id: Date.now().toString(),
-        ...formData,
-        created_by: session?.user.name,
-    };
+    setIsSubmitting(true);
 
-    console.log("Submitting vendor with data:", newVendor);
+    try {
+      const existingVendors = JSON.parse(localStorage.getItem('vendors') || '[]');
+     
+      const newVendor = {
+          id: Date.now().toString(),
+          ...formData,
+          created_by: formData.created_by || 101,
+      };
 
-    // Upload vendor images
-    const vendorImageUrls = await uploadImages(ImgData.images);
-    const menuImageUrls = await uploadImages(ImgData.menu);
+      console.log("Submitting vendor with data:", newVendor);
 
-    // Insert vendor into the database
-    await insertVendor(newVendor, vendorImageUrls, menuImageUrls);
+      // Upload vendor images
+      const vendorImageUrls = await uploadImages(ImgData.images);
+      const menuImageUrls = await uploadImages(ImgData.menu);
 
-    console.log(`New vendor added at: ${new Date().toLocaleString()}`);
+      // Insert vendor into the database
+      await insertVendor(newVendor, vendorImageUrls, menuImageUrls);
 
-    localStorage.setItem('vendors', JSON.stringify([...existingVendors, newVendor]));
+      console.log(`New vendor added at: ${new Date().toLocaleString()}`);
 
-    router.push('/home');
+      localStorage.setItem('vendors', JSON.stringify([...existingVendors, newVendor]));
+
+      router.push('/home');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      // Optionally add error handling UI here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const uploadImages = async (files: FileList | null): Promise<string[]> => {
@@ -420,11 +431,29 @@ const router = useRouter();
         </div>
       )}
 
-      <div className="flex justify-end space-x-4">
-        <Button type="button" variant="outline" onClick={() => router.push('/home')}>
+<div className="flex justify-end space-x-4">
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={() => router.push('/home')}
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
-        <Button type="submit">Add Outlet</Button>
+        <Button 
+          type="submit" 
+          disabled={isSubmitting}
+          className="relative"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Adding Outlet...
+            </>
+          ) : (
+            'Add Outlet'
+          )}
+        </Button>
       </div>
     </form>
   );

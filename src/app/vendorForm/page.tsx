@@ -13,7 +13,7 @@ import { Loader2 } from 'lucide-react';
 import { useLocationStore } from '../../store/locationStore';
 import { searchCity } from '../../services/locationService';
 import { useDebounce } from '../../hooks/useDebounce';
-
+import { useSession } from 'next-auth/react';
 
 interface FormData {
   name: string;
@@ -31,6 +31,9 @@ interface ImgData{
 }
 
 export default function VendorForm() {
+
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated';
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -117,7 +120,7 @@ export default function VendorForm() {
     const newVendor = {
         id: Date.now().toString(),
         ...formData,
-        created_by: formData.created_by || 101,
+        created_by: session?.user.name,
     };
 
     console.log("Submitting vendor with data:", newVendor);

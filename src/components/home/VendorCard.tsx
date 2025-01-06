@@ -33,7 +33,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
            className="w-full h-48 object-cover"
         />
 
-        <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1">
+        <div className="absolute top-3 right-3 bg-white text-gray-600 px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1">
           <Star className="w-4 h-4 text-yellow-400 fill-current" />
           {vendor.rating}
         </div>

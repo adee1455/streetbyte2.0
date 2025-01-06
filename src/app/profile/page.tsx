@@ -11,8 +11,8 @@ import { SupportTab } from '../../../src/components/profile/tabs/SupportTab';
 import { useAuthStore } from '../../store/authStore';
 
 export default function Profile() {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
   const [activeTab, setActiveTab] = useState('');
   const { isAuthenticated: authStoreIsAuthenticated, setIsAuthenticated } = useAuthStore();

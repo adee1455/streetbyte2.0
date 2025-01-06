@@ -279,33 +279,3 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
     </div>
   );
 }
-
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  if (!rating) {
-    alert("Please select a rating");
-    return;
-  }
-  if (!review.trim()) {
-    alert("Please write a review");
-    return;
-  }
-  if (!session?.user?.id) {
-    alert("User not authenticated");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const imageUrls = await uploadImages(images.map(image => image.file));
-    const reviewData = {
-      id,
-      vendor_id,
-      user_id: session.user.id,  // Use actual user ID from session
-      name: session?.user?.name || 'Anonymous',  // Provide fallback
-      rating,
-      review,
-      created: new Date().toISOString(),
-    };
-
-    await

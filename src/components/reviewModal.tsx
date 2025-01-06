@@ -17,9 +17,9 @@ interface ImageFile {
 }
 
 export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalProps) {
-
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
+  const router = useRouter();
 
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
@@ -27,26 +27,26 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
   const [hoveredStar, setHoveredStar] = useState<number>(0);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const id = Date.now().toString();
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Clean up object URLs to prevent memory leaks
     return () => {
-      images.forEach((image) => URL.revokeObjectURL(image.preview));
+      imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
     };
-  }, [images]);
+  }, [imagePreviews]);
 
   if (!isOpen) return null;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     
-    const files = Array.from(e.target.files).map((file) => ({
+    const files = Array.from(e.target.files).slice(0, 4 - images.length);
+    const newFiles = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
     }));
-    setImages((prevImages) => [...prevImages, ...files]);
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...files.map(file => file.preview)]);
+    setImages((prev) => [...prev, ...newFiles]);
+    setImagePreviews((prev) => [...prev, ...newFiles.map(file => file.preview)]);
   };
 
   const uploadImages = async (files: File[]): Promise<string[]> => {
@@ -56,13 +56,12 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
     for (const file of files) {
       try {
         const response = await storage.createFile(
-          '676ab6de002caef140d0', // Replace with your actual bucket ID
+          '676ab6de002caef140d0',
           ID.unique(),
           file
         );
-        const url = response.$id;
-        const imgUrl = storage.getFilePreview('676ab6de002caef140d0', url);
-        urls.push(imgUrl);
+        const url = storage.getFilePreview('676ab6de002caef140d0', response.$id);
+        urls.push(url);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
@@ -72,83 +71,116 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    const imageUrls = await uploadImages(images.map(image => image.file)); // Upload images and get URLs
+    if (!rating) {
+      alert("Please select a rating");
+      return;
+    }
+    if (!review.trim()) {
+      alert("Please write a review");
+      return;
+    }
 
-    // Prepare the review data
-    const reviewData = {
-      id,
-      vendor_id,
-      user_id: session?.user.id, // Replace with actual user ID
-      name: session?.user.name, // Replace with actual user name
-      rating,
-      review,
-      created: new Date().toISOString(), // Current date in ISO format
-      reviewImages: images.map(image => image.file), // Assuming images is an array of files
-    };
+    setLoading(true);
+    try {
+      const imageUrls = await uploadImages(images.map(image => image.file));
+      const reviewData = {
+        id,
+        vendor_id,
+        user_id: session?.user.id || '101',
+        name: session?.user.name,
+        rating,
+        review,
+        created: new Date().toISOString(),
+      };
 
-    // Insert review into the database
-    await insertReview(reviewData);
+      await insertReview(reviewData);
+      await insertReviewImages(reviewData, imageUrls);
 
-    // Insert review images into the database
-    await insertReviewImages(reviewData,imageUrls);
-
-    onClose(); // Close the modal after submission
-    router.push(`/vendorPage/${vendor_id}`);
+      onClose();
+      setRating(0);
+      setReview('');
+      setImages([]);
+      setImagePreviews([]);
+      router.refresh();
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const insertReview = async (reviewData: any) => {
     const response = await fetch('/api/review', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reviewData),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Failed to create review: ${errorData.message}`);
+      throw new Error(`Failed to create review: ${(await response.json()).message}`);
     }
   };
 
   const insertReviewImages = async (reviewData: any, imageUrls: string[]) => {
     for (const url of imageUrls) {
       const imageData = {
-        id: ID.unique(), // Generate a unique ID for each image
+        id: ID.unique(),
         vendor_id,
-        review_id: reviewData.id, // Use the actual review ID after insertion
+        review_id: reviewData.id,
         image_url: url,
         created_at: new Date().toISOString(),
       };
 
       const response = await fetch('/api/review-images', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(imageData),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error(`Failed to insert review image: ${errorData.message}`);
+        console.error(`Failed to insert review image: ${(await response.json()).message}`);
       }
     }
   };
 
   const removeImage = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index);
-    // Revoke the URL of the removed image
     URL.revokeObjectURL(images[index].preview);
-    setImages(newImages);
-    setImagePreviews(newImages.map(image => image.preview));
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
+
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  //       <div className="bg-white rounded-lg w-full max-w-md p-8">
+  //         <div className="text-center space-y-4">
+  //           <h3 className="text-lg font-medium text-gray-900">Authentication Required</h3>
+  //           <p className="text-sm text-gray-500">
+  //             Please login to your account to add a review
+  //           </p>
+  //           <div className="mt-5">
+  //             <button
+  //               onClick={() => router.push('/auth/signin')}
+  //               className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
+  //             >
+  //               Login to Continue
+  //             </button>
+  //             <button
+  //               onClick={onClose}
+  //               className="w-full mt-3 text-gray-600 hover:text-gray-800"
+  //             >
+  //               Cancel
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg w-full max-w-lg">
-        {/* Header */}
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">Add Review</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -156,9 +188,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          {/* Rating */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Rating</label>
             <div className="flex space-x-2">
@@ -184,7 +214,6 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
             </div>
           </div>
 
-          {/* Review Text */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Your Review</label>
             <textarea
@@ -195,7 +224,6 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
             />
           </div>
 
-          {/* Image Upload */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Add Photos</label>
             <div className="grid grid-cols-4 gap-2">
@@ -215,28 +243,69 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
                   </button>
                 </div>
               ))}
-              <label className="border-2 border-dashed rounded flex items-center justify-center h-20 cursor-pointer hover:border-red-500">
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-                <ImagePlus className="text-gray-400" />
-              </label>
+              {images.length < 4 && (
+                <label className="border-2 border-dashed rounded flex items-center justify-center h-20 cursor-pointer hover:border-red-500">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                  <ImagePlus className="text-gray-400" />
+                </label>
+              )}
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
+            disabled={loading}
+            className={`w-full bg-red-500 text-white py-2 px-4 rounded-md transition-colors ${
+              loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-red-600'
+            }`}
           >
-            Submit Review
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Submitting...
+              </div>
+            ) : (
+              'Submit Review'
+            )}
           </button>
         </form>
       </div>
     </div>
   );
 }
+
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!rating) {
+    alert("Please select a rating");
+    return;
+  }
+  if (!review.trim()) {
+    alert("Please write a review");
+    return;
+  }
+  if (!session?.user?.id) {
+    alert("User not authenticated");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const imageUrls = await uploadImages(images.map(image => image.file));
+    const reviewData = {
+      id,
+      vendor_id,
+      user_id: session.user.id,  // Use actual user ID from session
+      name: session?.user?.name || 'Anonymous',  // Provide fallback
+      rating,
+      review,
+      created: new Date().toISOString(),
+    };
+
+    await

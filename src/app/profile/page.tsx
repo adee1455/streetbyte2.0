@@ -14,7 +14,7 @@ export default function Profile() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
-  const [activeTab, setActiveTab] = useState('');
+  const [activeTab, setActiveTab] = useState('vendors');
   const { isAuthenticated: authStoreIsAuthenticated, setIsAuthenticated } = useAuthStore();
 
   useEffect(() => {
@@ -25,10 +25,10 @@ export default function Profile() {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'reviews':
-        return <ReviewsTab />;
       case 'vendors':
         return <VendorsTab />;
+      case 'reviews':
+        return <ReviewsTab />;
       case 'settings':
         return <SettingsTab />;
       case 'support':

@@ -8,8 +8,8 @@ interface Tab {
 }
 
 const tabs: Tab[] = [
-  { id: 'reviews', label: 'Reviews', icon: <Star className="w-5 h-5" /> },
   { id: 'vendors', label: 'Vendors', icon: <MapPin className="w-5 h-5" /> },
+  { id: 'reviews', label: 'Reviews', icon: <Star className="w-5 h-5" /> },
   { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
   { id: 'support', label: 'Support', icon: <HelpCircle className="w-5 h-5" /> },
 ];

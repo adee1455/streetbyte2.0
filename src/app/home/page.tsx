@@ -31,35 +31,49 @@ export default function Page() {
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const { city } = useLocationStore();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const fetchCards = async (selectedCity: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/cards?city=${encodeURIComponent(selectedCity)}`);
+      setError(null);
+
+      if (!selectedCity) {
+        setError("Please select a city");
+        setLoading(false);
+        return;
+      }
+
+      const queryParams = new URLSearchParams({
+        city: selectedCity,
+        ...(searchQuery && { search: searchQuery }),
+        ...(selectedCategory && { category: selectedCategory }),
+      });
+
+      const response = await fetch(`/api/cards?${queryParams}`);
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        console.error("Response was not JSON:", text);
-        throw new TypeError("Oops, we haven't got JSON!");
-      }
-
       const data = await response.json();
-      if (Array.isArray(data)) {
-        setCards(data);
-      } else {
-        throw new Error("Invalid data format received.");
-      }
+      setCards(data);
     } catch (error) {
       console.error("Error fetching cards:", error);
-      setError(error instanceof Error ? error.message : "Unable to load vendors. Please try again later.");
-      setCards([]);
+      setError(error instanceof Error ? error.message : "Failed to fetch vendors");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Update the search input section
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (city) {
+      fetchCards(city);
     }
   };
 
@@ -77,7 +91,7 @@ export default function Page() {
     if (city) {
       fetchCards(city);
     }
-  }, [city]); // Dependency on city changes
+  }, [city, searchQuery, selectedCategory]); // Dependency on city changes
 
   return (
     <div className="pb-16 md:pb-0">
@@ -89,9 +103,14 @@ export default function Page() {
             icon={<Search className="w-5 h-5" />}
             placeholder="Search for street food vendors..."
             className="mb-4 mt-4"
+            value={searchQuery}
+            onChange={handleSearch}
           />
           
-          <CategoryScroll />
+          <CategoryScroll 
+            onCategorySelect={setSelectedCategory} 
+            selectedCategory={selectedCategory}
+          />
         </div>
       </div>
 

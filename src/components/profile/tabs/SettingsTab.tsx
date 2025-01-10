@@ -7,8 +7,8 @@ export const SettingsTab = () => {
       <div className="bg-white rounded-lg shadow divide-y">
         <div className="p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Notifications</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="space-y-4 text-gray-900">
+            <div className="flex items-center text-gray-900 justify-between">
               <div className="flex items-center">
                 <Bell className="w-5 h-5 text-gray-400" />
                 <span className="ml-3">Push Notifications</span>
@@ -36,7 +36,7 @@ export const SettingsTab = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Moon className="w-5 h-5 text-gray-400" />
-              <span className="ml-3">Dark Mode</span>
+              <span className="ml-3 text-gray-900">Dark Mode</span>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" />
@@ -48,8 +48,8 @@ export const SettingsTab = () => {
         <div className="p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Language & Region</h3>
           <div className="flex items-center">
-            <Globe className="w-5 h-5 text-gray-400" />
-            <select className="ml-3 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+            <Globe className="w-5 h-5 text-gray-600" />
+            <select className="ml-3 block w-full py-2 px-3 border border-gray-300 text-gray-900 bg-white rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
               <option>English</option>
               <option>Hindi</option>
               <option>Bengali</option>

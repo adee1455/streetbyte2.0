@@ -4,7 +4,7 @@ import { MessageCircle, Phone, Mail, FileText } from 'lucide-react';
 export const SupportTab = () => {
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-lg shadow p-6 text-gray-900">
         <h3 className="text-lg font-medium text-gray-900 mb-4">How can we help?</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -42,7 +42,7 @@ export const SupportTab = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-lg shadow p-6 text-gray-900">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Common Questions</h3>
         <div className="space-y-4">
           {[

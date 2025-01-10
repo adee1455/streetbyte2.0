@@ -34,7 +34,7 @@ export const VendorsTab: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-pulse text-lg font-medium text-gray-600">Loading reviews...</div>
+        <div className="animate-pulse text-lg font-medium text-gray-600">Loading Vendors...</div>
       </div>
     );
   }

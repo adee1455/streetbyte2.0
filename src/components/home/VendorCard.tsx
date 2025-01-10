@@ -51,7 +51,11 @@ export default function VendorCard({ vendor }: VendorCardProps) {
         <p className="text-sm text-gray-600 mb-2">{vendor.foodType}</p>
         
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">{vendor.address}</span>
+          <span className="text-gray-600">
+              {vendor.address.length > 30 
+              ? `${vendor.address.slice(0, 30)}...` 
+              : vendor.address}
+          </span>
           <span className="font-medium text-green-600">Open Now</span>
         </div>
       </div>

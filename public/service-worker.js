@@ -2,7 +2,7 @@ const CACHE_NAME = 'streetbyte-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/jade.png',
+  '/logo.png',
   '/menu.avif',
   '/manifest.json'
 ];

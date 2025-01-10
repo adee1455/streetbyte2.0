@@ -10,6 +10,7 @@ import ReviewModal from '@/components/reviewModal';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import ReviewsTab from '@/components/profile/tabs/ReviewsTab';
+import ShareButton from '@/components/shareButton';
 
 interface VendorPageProps {
   params: Promise<{ id: string }>;
@@ -106,7 +107,7 @@ export default function Page({ params }: VendorPageProps) {
   const safeAddress = encodeURIComponent(vendor?.address || '');
   const safePhone = encodeURIComponent(vendor?.contact_number || '');
   console.log(vendor?.reviews);
-
+  const link = `/vendorPage/${vendor?.id}`;
   // If the vendor data is loaded, render it here
   return (
     <div className="min-h-screen bg-white text-gray-950">
@@ -119,7 +120,8 @@ export default function Page({ params }: VendorPageProps) {
             {/* Vendor Details */}
             <div className="bg-white">
               <div className="max-w-5xl mx-auto px-4 pt-4 pb-2">
-                <div className="pb-4 border-b">
+                <div className="pb-4 border-b flex justify-between ">
+                  <div>
                   <h1 className="text-[26px] font-bold font-Proxima text-black">
                     {vendor.name}
                   </h1>
@@ -129,6 +131,10 @@ export default function Page({ params }: VendorPageProps) {
                   <p className="text-gray-600 font-Proxima text-sm">
                     {vendor.address}
                   </p>
+                  </div>
+                  <div className='pt-3'>
+                    <ShareButton link={link} />
+                  </div>
                 </div>
               </div>
             </div>

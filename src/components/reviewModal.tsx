@@ -10,14 +10,16 @@ interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   vendor_id: string;
+  refreshVendor: () => void; // Add this prop
 }
+
 
 interface ImageFile {
   file: File;
   preview: string;
 }
 
-export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalProps) {
+export default function ReviewModal({ isOpen, onClose, vendor_id, refreshVendor }: ReviewModalProps) {
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
   const router = useRouter();
@@ -103,7 +105,8 @@ export default function ReviewModal({ isOpen, onClose, vendor_id }: ReviewModalP
       setReview('');
       setImages([]);
       setImagePreviews([]);
-      router.refresh();
+      refreshVendor(); 
+      router.push(`/vendorPage/${vendor_id}`)
     } catch (error) {
       console.error('Error submitting review:', error);
     } finally {

@@ -14,10 +14,12 @@ interface Review {
   images?: string[];
 }
 
-export const ReviewsTab: React.FC = () => {
+export const ReviewsTab = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserReviews = async () => {
@@ -38,8 +40,65 @@ export const ReviewsTab: React.FC = () => {
   }, [session?.user?.name]);
 
   const handleCardClick = (vendorId: string) => {
-    // Navigate to vendor's reviews section
     window.location.href = `/vendorPage/${vendorId}#reviews`;
+  };
+
+  const handleDeleteClick = (reviewId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setReviewToDelete(reviewId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!reviewToDelete) return;
+
+    try {
+      const response = await fetch(`/api/deleteReview?reviewId=${reviewToDelete}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || 'Failed to delete review');
+      }
+
+      setReviews(reviews.filter((review) => review.id !== reviewToDelete));
+      console.log('Review deleted successfully');
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    } finally {
+      setShowDeleteModal(false);
+      setReviewToDelete(null);
+    }
+  };
+
+  const DeleteConfirmationModal = () => {
+    if (!showDeleteModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+          <h3 className="text-lg text-gray-900 font-semibold mb-2">Delete Review</h3>
+          <p className="text-gray-600 mb-4">
+            Are you sure you want to delete this review? This action cannot be undone.
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setShowDeleteModal(false)}
+              className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteConfirm}
+              className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -52,6 +111,8 @@ export const ReviewsTab: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      <DeleteConfirmationModal />
+      
       {reviews.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-400 mb-4">
@@ -70,10 +131,10 @@ export const ReviewsTab: React.FC = () => {
           >
             <Card className="w-full m-2">
               <CardContent className="p-6">
-                <div className="flex gap-4 ">
-                  <div className="w-20 h-20 mt-4 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden ">
+                <div className="flex gap-4">
+                  <div className="w-20 h-20 mt-4 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                     {review.images && review.images.length > 0 ? (
-                      <div className="relative w-full h-full">
+                      <div className=" w-full h-full">
                         <img
                           src={review.images[0]}
                           alt={`Review for ${review.vendorName}`}
@@ -115,10 +176,10 @@ export const ReviewsTab: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                        {/* <button className="p-1.5 text-gray-500 hover:text-blue-600 rounded-full transition-colors duration-200">
-                          <Edit className="w-4 h-4" />
-                        </button> */}
-                        <button className="p-1.5 text-gray-500 hover:text-red-600 rounded-full transition-colors duration-200">
+                        <button 
+                          className="p-1.5 text-gray-500 hover:text-red-600 rounded-full transition-colors duration-200"
+                          onClick={(e) => handleDeleteClick(review.id, e)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

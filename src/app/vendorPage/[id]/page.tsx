@@ -9,6 +9,7 @@ import { Modal } from '../../../components/ui/Modal';
 import ReviewModal from '@/components/reviewModal';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import ReviewsTab from '@/components/profile/tabs/ReviewsTab';
 
 interface VendorPageProps {
   params: Promise<{ id: string }>;
@@ -38,33 +39,61 @@ export default function Page({ params }: VendorPageProps) {
     router.push(`/vendorPage/${id}`);
   }
 
-  useEffect(() => {
-    const fetchVendor = async () => {
-      try {
-        const response = await fetch(`/api/vendorPage?id=${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+  // useEffect(() => {
+  //   const fetchVendor = async () => {
+  //     try {
+  //       const response = await fetch(`/api/vendorPage?id=${id}`);
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
 
-        const data = await response.json();
-        if (data && typeof data === 'object' && data.id) {
-          setVendor(data as Vendor);
-        } else {
-          throw new Error('Invalid data format received.');
-        }
-      } catch (err) {
-        console.error('Error fetching vendor data:', err);
-        setError('Unable to load vendor information. Please try again.');
-      } finally {
-        setLoading(false);
+  //       const data = await response.json();
+  //       if (data && typeof data === 'object' && data.id) {
+  //         setVendor(data as Vendor);
+  //       } else {
+  //         throw new Error('Invalid data format received.');
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching vendor data:', err);
+  //       setError('Unable to load vendor information. Please try again.');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   // Only fetch data when the `id` parameter is available
+  //   if (id) {
+  //     fetchVendor();
+  //   }
+  // }, [id]);
+  const fetchVendor = async () => {
+    try {
+      const response = await fetch(`/api/vendorPage?id=${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
+  
+      const data = await response.json();
+      if (data && typeof data === 'object' && data.id) {
+        setVendor(data as Vendor);
+      } else {
+        throw new Error('Invalid data format received.');
+      }
+    } catch (err) {
+      console.error('Error fetching vendor data:', err);
+      setError('Unable to load vendor information. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     // Only fetch data when the `id` parameter is available
     if (id) {
       fetchVendor();
     }
   }, [id]);
+  
 
   if (loading) {
     return <div>Loading vendor information...</div>;
@@ -207,9 +236,10 @@ export default function Page({ params }: VendorPageProps) {
 
             {/* Reviews Section */}
             <ReviewModal
-              isOpen={isreviewModalOpen}
-              onClose={() => setIsreviewModalOpen(false)}
-              vendor_id={vendor.id}
+                isOpen={isreviewModalOpen}
+                onClose={() => setIsreviewModalOpen(false)}
+                vendor_id={id}
+                refreshVendor={fetchVendor} // Pass the function here
             />
             <div className="mt-2 px-4 py-4 pb-24">
               <div className="flex gap-2 justify-between">

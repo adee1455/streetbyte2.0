@@ -18,14 +18,14 @@ export const CategoryScroll = () => {
             key={category.id}
             className="flex-shrink-0 text-center"
           >
-            <div className="w-16 h-16 rounded-full overflow-hidden mb-2">
+            <div className="w-[66px] h-[66px] rounded-full overflow-hidden mb-2">
               <img
                 src={category.image}
                 alt={category.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-xs font-medium text-gray-700">
               {category.name}
             </span>
           </div>

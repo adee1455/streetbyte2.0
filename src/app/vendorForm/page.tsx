@@ -290,11 +290,11 @@ const router = useRouter();
           required
         >
           <option value="">Select Food Type</option>
-          <option value="Street Food">Street Food</option>
-          <option value="Fast Food">Fast Food</option>
+          <option value="StreetFood">Street Food</option>
+          <option value="FastFood">Fast Food</option>
           <option value="Beverages">Beverages</option>
           <option value="Desserts">Desserts</option>
-          <option value="Fine Dine">Fine Dine</option>
+          <option value="FineDine">Fine Dine</option>
         </select>
       </div>
 

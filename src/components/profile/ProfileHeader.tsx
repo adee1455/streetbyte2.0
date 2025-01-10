@@ -11,7 +11,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, photo
   console.log(photoURL);
   return (
     <div className="relative">
-      <div className="h-32 bg-gradient-to-r from-red-500 to-red-600" />
+      <div className="h-12 bg-white border-t " />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-16">
           <div className="flex items-end">

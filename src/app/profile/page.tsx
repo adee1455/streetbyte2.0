@@ -41,7 +41,7 @@ export default function Profile() {
   return (
     <>
       {isAuthenticated ? (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-white">
           <ProfileHeader 
             name={session?.user.name ?? ''} 
             email={session?.user.email ?? ''} 

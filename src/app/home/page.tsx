@@ -9,6 +9,7 @@ import { LocationHeader } from '../../../src/components/home/LocationHeader';
 import { FloatingActionButton } from '../../../src/components/home/FloatingActionButton';
 import dynamic from 'next/dynamic';
 import { useLocationStore } from '../../store/locationStore';
+import { CityUnavailableModal } from '@/components/landing/CityUnavailableModal';
 
 const DynamicComponent = dynamic(() => import('../../../src/components/home/VendorCard'), {
   loading: () => <p>Loading...</p>,
@@ -34,6 +35,7 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState('');
   const { city } = useLocationStore();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showUnavailableModal, setShowUnavailableModal] = useState(false); // Track modal state
 
   const fetchCards = async (selectedCity: string) => {
     try {
@@ -60,6 +62,13 @@ export default function Page() {
 
       const data = await response.json();
       setCards(data);
+
+      // Check if no vendors are available
+      if (data.length === 0) {
+        setShowUnavailableModal(true);
+      } else {
+        setShowUnavailableModal(false);
+      }
     } catch (error) {
       console.error("Error fetching cards:", error);
       setError(error instanceof Error ? error.message : "Failed to fetch vendors");
@@ -68,30 +77,18 @@ export default function Page() {
     }
   };
 
-  // Update the search input section
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    if (city) {
-      fetchCards(city);
-    }
-  };
-
-  // Initial load
   useEffect(() => {
-    // Check localStorage directly for initial load
     const storedCity = localStorage.getItem('selectedCity');
     if (storedCity) {
       fetchCards(storedCity);
     }
-  }, []); // Empty dependency array for initial load
+  }, []);
 
-  // React to city changes
   useEffect(() => {
     if (city) {
       fetchCards(city);
     }
-  }, [city, searchQuery, selectedCategory]); // Dependency on city changes
+  }, [city, searchQuery, selectedCategory]);
 
   return (
     <div className="pb-16 md:pb-0">
@@ -104,7 +101,7 @@ export default function Page() {
             placeholder="Search for street food vendors..."
             className="mb-4 mt-4"
             value={searchQuery}
-            onChange={handleSearch}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           
           <CategoryScroll 
@@ -140,6 +137,13 @@ export default function Page() {
 
       <FloatingActionButton />
       <Navigation />
+
+      {/* CityUnavailableModal */}
+      <CityUnavailableModal
+        isOpen={showUnavailableModal}
+        onClose={() => setShowUnavailableModal(false)}
+        cityName={city || 'Selected City'}
+      />
     </div>
   );
 }

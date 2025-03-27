@@ -15,7 +15,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({ address }) => {
   const [geocodeCoordinates, setGeocodeCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDnFERa1oyGkz3C8hWtPWi0UGtx1iD1FxM", // Use environment variable
+    googleMapsApiKey: "AIzaSyAlHWabsY5FYArk_XXMYRjJN8VXdcWu-vk", // Use environment variable
   });
 
   useEffect(() => {

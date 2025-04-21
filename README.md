@@ -1,36 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍜 Streetbyte
 
-## Getting Started
+> **Discover. Share. Celebrate Street Food.**
 
-First, run the development server:
+**Streetbyte** is a community-driven web app that helps food lovers discover and share the best street food experiences around them. Designed with a focus on India's vibrant street food culture, Streetbyte connects users with local food vendors through real-time stories, geolocation, and community reviews — making it easier than ever to find hidden gems and delicious eats in your city.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 📍 **Nearby Discovery** – Find street vendors around you based on real-time location.
+- 📸 **Stories & Posts** – Share moments, photos, and food reviews with the community.
+- 🗺️ **Vendor Profiles** – Browse menus, specialties, and stall timings.
+- 🌟 **Community Ratings** – Honest, crowd-sourced reviews from real foodies.
+- ⚡ **Progressive Web App (PWA)** – Add Streetbyte to your phone like a native app.
+- 🎨 **Modern UI** – Built with Tailwind CSS, responsive across all devices.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

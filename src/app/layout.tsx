@@ -6,7 +6,7 @@ import Head from "next/head";
 import InstallAppBanner from "@/components/installComp";
 import SessionProviderWrapper from "../components/SessionProviderWrapper"; 
 import ClientLayout from './ClientLayout';
-
+import { Analytics } from "@vercel/analytics/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

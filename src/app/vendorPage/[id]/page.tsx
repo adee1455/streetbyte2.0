@@ -48,6 +48,9 @@ export default function Page({ params }: VendorPageProps) {
       }
   
       const data = await response.json();
+      console.log('Vendor data received:', data);
+      console.log('Vendor images:', data.images);
+      
       if (data && typeof data === 'object' && data.id) {
         setVendor(data as Vendor);
       } else {
@@ -149,6 +152,9 @@ export default function Page({ params }: VendorPageProps) {
                       className="h-32 cursor-pointer pl-4"
                       alt={`Menu item ${index + 1}`}
                       onClick={() => openModal(item)}
+                      onError={(e) => {
+                        console.error('Error loading menu image:', item);
+                      }}
                     />
                   ))
                 ) : (
@@ -164,6 +170,9 @@ export default function Page({ params }: VendorPageProps) {
                   src={selectedImage}
                   alt="Menu"
                   className="max-h-[90vh] max-w-[90vw] object-contain"
+                  onError={(e) => {
+                    console.error('Error loading modal image:', selectedImage);
+                  }}
                 />
               </div>
             </Modal>
@@ -239,9 +248,12 @@ export default function Page({ params }: VendorPageProps) {
                         {/* Add profile picture */}
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
                           <img
-                            src={review.profile } // Add a default avatar fallback
+                            src={review.profile}
                             alt={`${review.name}'s profile`}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              console.error('Error loading profile image:', review.profile);
+                            }}
                           />
                         </div>
                         <span className="font-semibold">{review.name}</span>
@@ -265,6 +277,9 @@ export default function Page({ params }: VendorPageProps) {
                             alt={`Review ${index + 1}`}
                             className="h-20 cursor-pointer"
                             onClick={() => setSelectedReviewImage(image)}
+                            onError={(e) => {
+                              console.error('Error loading review image:', image);
+                            }}
                           />
                         ))}
                       </div>
@@ -277,6 +292,9 @@ export default function Page({ params }: VendorPageProps) {
                             src={selectedReviewImage}
                             alt="Review"
                             className="max-h-[90vh] max-w-[90vw] object-contain"
+                            onError={(e) => {
+                              console.error('Error loading selected review image:', selectedReviewImage);
+                            }}
                           />
                         )}
                       </div>

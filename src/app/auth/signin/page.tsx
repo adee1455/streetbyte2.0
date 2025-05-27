@@ -10,9 +10,23 @@ const AuthPage = () => {
   const [error, setError] = useState("");
 
   const handleGoogleSignIn = async () => {
-    const result = await signIn("google", { callbackUrl: "/home" });
-    if (result?.error) {
-      setError(result.error);
+    try {
+      const result = await signIn("google", { 
+        callbackUrl: "/home",
+        redirect: false 
+      });
+
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+
+      if (result?.ok) {
+        router.push('/home');
+      }
+    } catch (error) {
+      console.error('Sign in error:', error);
+      setError('An error occurred during sign in');
     }
   };
 

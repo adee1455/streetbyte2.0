@@ -54,13 +54,16 @@ export default function Page() {
         ...(selectedCategory && { category: selectedCategory }),
       });
 
+      console.log('Fetching cards with params:', queryParams.toString());
       const response = await fetch(`/api/cards?${queryParams}`);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Received cards data:', data);
       setCards(data);
 
       // Check if no vendors are available
@@ -72,6 +75,7 @@ export default function Page() {
     } catch (error) {
       console.error("Error fetching cards:", error);
       setError(error instanceof Error ? error.message : "Failed to fetch vendors");
+      setCards([]);
     } finally {
       setLoading(false);
     }

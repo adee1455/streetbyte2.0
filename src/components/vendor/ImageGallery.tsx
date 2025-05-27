@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import Image from 'next/image';
 
 interface ImageGalleryProps {
   images: string[]; // Array of strings instead of objects
@@ -9,6 +8,11 @@ interface ImageGalleryProps {
 export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [showModal, setShowModal] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    console.log('Images received:', images);
+  }, [images]);
 
   const handlePrevious = () => {
     setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -19,6 +23,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   };
 
   if (!images || images.length === 0) {
+    console.log('No images available');
     return <div>No images to display</div>;
   }
 
@@ -26,14 +31,18 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     <>
       <div className="relative h-56 md:h-96">
         {/* Main Image */}
-        <Image
-          src={images[0]} // Access the URL directly
-          alt="Main"
-          className="w-full h-full object-cover cursor-pointer"
-          onClick={() => setShowModal(true)}
-          width={800} // Add dimensions for Next.js optimization
-          height={600}
-        />
+        {images[0] && (
+          <img
+            src={images[0]}
+            alt="Main"
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={() => setShowModal(true)}
+            onError={(e) => {
+              console.error('Error loading image:', images[0]);
+              setImageError(true);
+            }}
+          />
+        )}
 
         {/* Thumbnails */}
         {images.length > 1 && (
@@ -47,12 +56,13 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                   setShowModal(true);
                 }}
               >
-                <Image
-                  src={image} // Directly use the string URL
+                <img
+                  src={image}
                   alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
-                  width={80}
-                  height={80}
+                  onError={(e) => {
+                    console.error('Error loading thumbnail:', image);
+                  }}
                 />
               </button>
             ))}
@@ -64,12 +74,13 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                   setShowModal(true);
                 }}
               >
-                <Image
+                <img
                   src={images[4]}
                   alt="More"
                   className="w-full h-full object-cover"
-                  width={80}
-                  height={80}
+                  onError={(e) => {
+                    console.error('Error loading more thumbnail:', images[4]);
+                  }}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <span className="text-white font-medium">
@@ -102,12 +113,13 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
               <ChevronLeft className="w-8 h-8" />
             </button>
 
-            <Image
+            <img
               src={images[currentImageIndex]}
               alt={`Image ${currentImageIndex + 1}`}
               className="max-h-[90vh] max-w-[90vw] object-contain"
-              width={800}
-              height={600}
+              onError={(e) => {
+                console.error('Error loading modal image:', images[currentImageIndex]);
+              }}
             />
 
             <button

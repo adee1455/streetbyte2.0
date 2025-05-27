@@ -57,7 +57,12 @@ export const GET = async (req) => {
     // Construct response object
     const vendorWithDetails = {
       ...vendors[0],
-      images: images.map((img) => img.image_url),
+      images: images.map((img) => {
+        const url = img.image_url;
+        // If the URL is not already a complete URL, return it as is
+        // The frontend will handle the display
+        return url;
+      }),
       menu: menu.map((item) => item.image_url),
       reviews: reviews.map((review) => ({
         ...review,
@@ -67,6 +72,7 @@ export const GET = async (req) => {
       })),
     };
 
+    console.log('Final vendor data:', vendorWithDetails);
     return NextResponse.json(vendorWithDetails);
   } catch (e) {
     console.error('Error fetching vendor details:', e.message);

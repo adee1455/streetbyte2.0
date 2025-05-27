@@ -110,51 +110,40 @@ export const VendorsTab: React.FC = () => {
         <p className="text-gray-500">You haven't added any vendors yet.</p>
       ) : (
         vendors.map((vendor) => (
-          <button 
-          key={vendor.id} 
-          className="w-full cursor-pointer"
-          onClick={() => handleCardClick(vendor.id)}
-          style={{ display: 'block', border: 'none', padding: 0, margin: 0 }}
-        >
-
-          <div key={vendor.id} className="bg-white rounded-lg p-4 m-2 shadow-md">
-            <div className="flex gap-4">
-              <img
-                src={vendor.images[0]}
-                alt={vendor.name}
-                className="w-24 h-24 rounded-lg object-cover"
-              />
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <h3 className="font-semibold text-gray-900">{vendor.name}</h3>
-                  <div className="flex gap-2">
-                    {/* <button className="p-1 text-gray-400 hover:text-gray-600">
-                      <Edit className="w-5 h-5" />
-                    </button> */}
-                    <button 
-                          className="p-1.5 text-gray-500 hover:text-red-600 rounded-full transition-colors duration-200"
-                          onClick={(e) => handleDeleteClick(vendor.id, e)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                    </button>
+          <div 
+            key={vendor.id} 
+            className="w-full cursor-pointer"
+            onClick={() => handleCardClick(vendor.id)}
+          >
+            <div className="bg-white rounded-lg p-4 m-2 shadow-md">
+              <div className="flex gap-4">
+                <img
+                  src={vendor.images[0]}
+                  alt={vendor.name}
+                  className="w-24 h-24 rounded-lg object-cover"
+                />
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <h3 className="font-semibold text-gray-900">{vendor.name}</h3>
+                    <div className="flex gap-2">
+                      <button 
+                        className="p-1.5 text-gray-500 hover:text-red-600 rounded-full transition-colors duration-200"
+                        onClick={(e) => handleDeleteClick(vendor.id, e)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center mt-1 text-sm text-left text-gray-600">
+                  <div className="flex items-center mt-1 text-sm text-left text-gray-600">
                     <MapPin className="w-4 h-4 mr-1" />
                     {vendor.address.length > 30 
-                    ? `${vendor.address.slice(0, 30)}...` 
-                    : vendor.address}
+                      ? `${vendor.address.slice(0, 30)}...` 
+                      : vendor.address}
+                  </div>
                 </div>
-
-                <div className="flex items-center mt-1">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                  <span className="ml-1 text-sm text-gray-600">{vendor.rating}</span>
-                </div>
-      
               </div>
             </div>
           </div>
-          </button>
         ))
       )}
     </div>

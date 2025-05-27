@@ -4,9 +4,6 @@ import Link from 'next/link';
 import { Camera, MapPin, Info, PhoneCallIcon, Star, User2Icon } from 'lucide-react';
 import { Input } from '../../../src/components/ui/Input';
 import { Button } from '../../../src/components/ui/Button';
-import { storage } from '../../../src/lib/appwrite';
-import { ID } from 'appwrite';
-import { link } from 'fs';
 import { useRouter } from 'next/navigation';
 import { LocationInput } from '@/components/landing/LocationInput';
 import { Loader2 } from 'lucide-react';
@@ -156,17 +153,24 @@ export default function VendorForm() {
     const urls: string[] = [];
     for (const file of Array.from(files)) {
       try {
-        const response = await storage.createFile(
-          '676ab6de002caef140d0',
-          ID.unique(),
-          file
-        );
-        const url = response.$id;
-        const imgUrl = storage.getFilePreview('676ab6de002caef140d0', url)
-        urls.push(imgUrl);
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('/api/uploadImages', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Upload failed: ${errorData.error || response.statusText}`);
+        }
+
+        const data = await response.json();
+        urls.push(data.url);
       } catch (error) {
         console.error('Error uploading file:', error);
-        // Handle the error as needed (e.g., show a notification)
+        throw error;
       }
     }
     return urls;

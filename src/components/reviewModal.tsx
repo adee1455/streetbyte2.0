@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Star, X, ImagePlus } from 'lucide-react';
-import { storage } from '../lib/appwrite';
-import { ID } from 'appwrite';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { profile } from 'console';
 
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   vendor_id: string;
-  refreshVendor: () => void; // Add this prop
+  refreshVendor: () => void;
 }
-
 
 interface ImageFile {
   file: File;
@@ -58,15 +54,24 @@ export default function ReviewModal({ isOpen, onClose, vendor_id, refreshVendor 
     const urls: string[] = [];
     for (const file of files) {
       try {
-        const response = await storage.createFile(
-          '676ab6de002caef140d0',
-          ID.unique(),
-          file
-        );
-        const url = storage.getFilePreview('676ab6de002caef140d0', response.$id);
-        urls.push(url);
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('/api/uploadImages', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Upload failed: ${errorData.error || response.statusText}`);
+        }
+
+        const data = await response.json();
+        urls.push(data.url);
       } catch (error) {
         console.error('Error uploading file:', error);
+        throw error;
       }
     }
     return urls;
@@ -89,7 +94,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id, refreshVendor 
       const reviewData = {
         id,
         vendor_id,
-        user_id: session?.user.id || '101',
+        user_id: session?.user.id,
         name: session?.user.name,
         profile: session?.user.image,
         rating,
@@ -129,7 +134,7 @@ export default function ReviewModal({ isOpen, onClose, vendor_id, refreshVendor 
   const insertReviewImages = async (reviewData: any, imageUrls: string[]) => {
     for (const url of imageUrls) {
       const imageData = {
-        id: ID.unique(),
+        id: Date.now().toString(),
         vendor_id,
         review_id: reviewData.id,
         image_url: url,

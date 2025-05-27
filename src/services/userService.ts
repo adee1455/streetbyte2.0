@@ -1,7 +1,8 @@
 import { query } from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
-interface User {
-  id: number;
+interface UserRow extends RowDataPacket {
+  id: string;
   name: string;
   email: string;
   image: string | null;
@@ -14,16 +15,17 @@ export const createOrGetUser = async (userData: {
   email: string;
   image?: string;
   auth_provider: string;
-}): Promise<User> => {
+}): Promise<Omit<UserRow, keyof RowDataPacket>> => {
   try {
     // First check if user exists
-    const existingUser = await query({
+    const existingUser = await query<UserRow[]>({
       query: 'SELECT * FROM users WHERE email = ?',
       values: [userData.email],
-    }) as User[];
+    });
 
     if (existingUser.length > 0) {
-      return existingUser[0];
+      const { constructor, ...userData } = existingUser[0];
+      return userData;
     }
 
     // Generate a simple ID (timestamp + random number)
@@ -46,7 +48,7 @@ export const createOrGetUser = async (userData: {
 
     // Return the newly created user
     return {
-      id,
+      id: id.toString(),
       name: userData.name,
       email: userData.email,
       image: userData.image || null,
@@ -59,12 +61,12 @@ export const createOrGetUser = async (userData: {
   }
 };
 
-export const getUserProfile = async (email: string): Promise<User | null> => {
+export const getUserProfile = async (email: string): Promise<UserRow | null> => {
   try {
-    const result = await query({
+    const result = await query<UserRow[]>({
       query: 'SELECT * FROM users WHERE email = ?',
       values: [email],
-    }) as User[];
+    });
 
     return result[0] || null;
   } catch (error) {

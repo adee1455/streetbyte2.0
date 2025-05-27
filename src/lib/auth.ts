@@ -2,6 +2,15 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { query } from './db';
 import bcrypt from 'bcryptjs';
+import { RowDataPacket } from 'mysql2';
+
+interface UserRow extends RowDataPacket {
+  id: string;
+  email: string;
+  username: string;
+  password: string;
+  image: string | null;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const result = await query({
+          const result = await query<UserRow[]>({
             query: 'SELECT * FROM users WHERE email = ?',
             values: [credentials.email],
           });

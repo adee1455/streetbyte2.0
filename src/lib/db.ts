@@ -1,4 +1,5 @@
 import { createPool } from 'mysql2/promise';
+import { RowDataPacket, OkPacket, ResultSetHeader } from 'mysql2';
 
 // Create a database connection pool
 const pool = createPool({
@@ -17,12 +18,12 @@ const pool = createPool({
 });
 
 // Execute SQL queries using the pool
-export const query = async ({ query, values }) => {
+export const query = async <T = RowDataPacket[]>({ query, values }: { query: string; values: any[] }): Promise<T> => {
   let connection;
   try {
     connection = await pool.getConnection();
     const [rows] = await connection.execute(query, values);
-    return rows;
+    return rows as T;
   } catch (error) {
     console.error('Database query error:', {
       query,
@@ -39,4 +40,4 @@ export const query = async ({ query, values }) => {
       connection.release();
     }
   }
-};
+}; 

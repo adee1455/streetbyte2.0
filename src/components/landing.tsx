@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { LocationInput } from './landing/LocationInput';
 import { Search, MapPin, Utensils, Star, Building, ChevronLeft, ChevronRight, LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface FeatureCardProps {
   title: string;
@@ -79,7 +80,14 @@ export default function Landing(){
 
         <div className='bg-white h-full mt-2'>
           <div className=''>
-            <img src="/hero.jpeg" alt="" />
+            <Image 
+              src="/hero.jpeg" 
+              alt="Hero image"
+              width={1920}
+              height={1080}
+              className="w-full h-auto"
+              priority
+            />
           </div>
                 
           <div className="px-4 py-6 bg-gradient-to-b from-white to-gray-100">
@@ -91,10 +99,13 @@ export default function Landing(){
               </p>
 
               <div className="relative">
-                <img 
+                <Image 
                   src="/map.svg" 
                   alt="Location Map" 
+                  width={288}
+                  height={288}
                   className="mx-auto w-72 h-auto drop-shadow-md"
+                  priority
                 />
               </div>
             </div>

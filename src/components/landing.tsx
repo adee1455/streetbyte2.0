@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { LocationInput } from './landing/LocationInput';
 import { Search, MapPin, Utensils, Star, Building, ChevronLeft, ChevronRight, LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import ImageWithFallback from './ImageWithFallback';
 
 interface FeatureCardProps {
   title: string;
@@ -80,14 +79,7 @@ export default function Landing(){
 
         <div className='bg-white h-full mt-2'>
           <div className=''>
-            <ImageWithFallback
-              src="/hero.jpeg"
-              alt="Hero image"
-              width={1920}
-              height={1080}
-              className="w-full h-auto"
-              priority
-            />
+            <img src="/hero.jpeg" alt="" />
           </div>
                 
           <div className="px-4 py-6 bg-gradient-to-b from-white to-gray-100">
@@ -99,11 +91,9 @@ export default function Landing(){
               </p>
 
               <div className="relative">
-                <ImageWithFallback
-                  src="/map.svg"
-                  alt="Location Map"
-                  width={288}
-                  height={288}
+                <img 
+                  src="/map.svg" 
+                  alt="Location Map" 
                   className="mx-auto w-72 h-auto drop-shadow-md"
                 />
               </div>
@@ -169,11 +159,9 @@ export default function Landing(){
               <div className="relative">
                 <div className="bg-gradient-to-r from-red-500 to-pink-500 rounded-xl p-8 shadow-2xl">
                   <div className="flex flex-col items-center">
-                    <ImageWithFallback
-                      src="/nashik.jpg"
-                      alt="Nashik"
-                      width={96}
-                      height={96}
+                    <img 
+                      src="/nashik.jpg" 
+                      alt="Nashik" 
                       className="rounded-full w-24 h-24 border-4 border-white shadow-lg mb-4"
                     />
                     <h3 className="text-2xl font-bold text-white mb-2">Nashik</h3>

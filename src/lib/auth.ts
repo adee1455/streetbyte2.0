@@ -26,12 +26,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const result = await query<UserRow[]>({
+          const result = await query({
             query: 'SELECT * FROM users WHERE email = ?',
             values: [credentials.email],
-          });
+          }) as UserRow[];
 
-          const user = Array.isArray(result) ? result[0] : null;
+          const user = result[0];
 
           if (!user) {
             return null;

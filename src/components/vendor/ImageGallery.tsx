@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import ImageWithFallback from '../ImageWithFallback';
 
 interface ImageGalleryProps {
   images: string[]; // Array of strings instead of objects
@@ -8,7 +9,6 @@ interface ImageGalleryProps {
 export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [showModal, setShowModal] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     console.log('Images received:', images);
@@ -32,15 +32,13 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       <div className="relative h-56 md:h-96">
         {/* Main Image */}
         {images[0] && (
-          <img
+          <ImageWithFallback
             src={images[0]}
             alt="Main"
+            width={800}
+            height={400}
             className="w-full h-full object-cover cursor-pointer"
-            onClick={() => setShowModal(true)}
-            onError={(e) => {
-              console.error('Error loading image:', images[0]);
-              setImageError(true);
-            }}
+            priority
           />
         )}
 
@@ -56,13 +54,12 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                   setShowModal(true);
                 }}
               >
-                <img
+                <ImageWithFallback
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    console.error('Error loading thumbnail:', image);
-                  }}
                 />
               </button>
             ))}
@@ -74,13 +71,12 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                   setShowModal(true);
                 }}
               >
-                <img
+                <ImageWithFallback
                   src={images[4]}
                   alt="More"
+                  width={80}
+                  height={80}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    console.error('Error loading more thumbnail:', images[4]);
-                  }}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <span className="text-white font-medium">
@@ -113,13 +109,12 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
               <ChevronLeft className="w-8 h-8" />
             </button>
 
-            <img
+            <ImageWithFallback
               src={images[currentImageIndex]}
               alt={`Image ${currentImageIndex + 1}`}
+              width={1200}
+              height={800}
               className="max-h-[90vh] max-w-[90vw] object-contain"
-              onError={(e) => {
-                console.error('Error loading modal image:', images[currentImageIndex]);
-              }}
             />
 
             <button

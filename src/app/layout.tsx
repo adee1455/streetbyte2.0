@@ -7,6 +7,7 @@ import InstallAppBanner from "@/components/installComp";
 import SessionProviderWrapper from "../components/SessionProviderWrapper"; 
 import ClientLayout from './ClientLayout';
 import { Analytics } from "@vercel/analytics/next"
+import DesktopWarning from "@/components/DesktopWarning";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <DesktopWarning />
         <ClientLayout>
           <InstallAppBanner/>
           <SessionProviderWrapper>

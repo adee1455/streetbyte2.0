@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Star, Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import ImageWithFallback from '../ImageWithFallback';
 
 interface Vendor {
   id: string;
@@ -27,10 +28,12 @@ export default function VendorCard({ vendor }: VendorCardProps) {
       className="block bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
     >
       <div className="relative">
-        <img
-            src={vendor.images.length > 0 ? vendor.images[0] : '/jade.png'}
-            alt={vendor.name}
-           className="w-full h-48 object-cover"
+        <ImageWithFallback
+          src={vendor.images.length > 0 ? vendor.images[0] : '/jade.png'}
+          alt={vendor.name}
+          width={400}
+          height={192}
+          className="w-full h-48 object-cover"
         />
 
         <div className="absolute top-3 right-3 bg-white text-gray-600 px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1">

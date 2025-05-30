@@ -15,13 +15,13 @@ export const createOrGetUser = async (userData: {
   email: string;
   image?: string;
   auth_provider: string;
-}): Promise<Omit<UserRow, keyof RowDataPacket>> => {
+}): Promise<Pick<UserRow, 'id' | 'name' | 'email' | 'image' | 'auth_provider' | 'created_at'>> => {
   try {
     // First check if user exists
-    const existingUser = await query<UserRow[]>({
+    const existingUser = await query({
       query: 'SELECT * FROM users WHERE email = ?',
       values: [userData.email],
-    });
+    }) as UserRow[];
 
     if (existingUser.length > 0) {
       const { constructor, ...userData } = existingUser[0];
@@ -63,10 +63,10 @@ export const createOrGetUser = async (userData: {
 
 export const getUserProfile = async (email: string): Promise<UserRow | null> => {
   try {
-    const result = await query<UserRow[]>({
+    const result = await query({
       query: 'SELECT * FROM users WHERE email = ?',
       values: [email],
-    });
+    }) as UserRow[];
 
     return result[0] || null;
   } catch (error) {

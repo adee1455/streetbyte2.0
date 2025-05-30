@@ -18,7 +18,20 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   className = '',
   priority = false,
 }) => {
-  const [imgSrc, setImgSrc] = useState(src);
+  const [imgSrc, setImgSrc] = useState<string>(() => {
+    // Handle relative URLs
+    if (src.startsWith('/')) {
+      return src;
+    }
+    // Handle absolute URLs
+    try {
+      new URL(src);
+      return src;
+    } catch {
+      // If URL is invalid, return fallback
+      return '/imageError.png';
+    }
+  });
 
   return (
     <Image
@@ -29,6 +42,7 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
       className={className}
       priority={priority}
       onError={() => setImgSrc('/imageError.png')}
+      unoptimized={false}
     />
   );
 };

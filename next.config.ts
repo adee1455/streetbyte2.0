@@ -9,8 +9,27 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      }
     ],
-    unoptimized: true, // This will bypass the Next.js Image Optimization API
+    domains: ['streetbyte.s3.ap-south-1.amazonaws.com', 'images.unsplash.com', 'lh3.googleusercontent.com'],
+    unoptimized: false,
   },
   env: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

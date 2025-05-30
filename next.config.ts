@@ -29,8 +29,7 @@ const nextConfig: NextConfig = {
       }
     ],
     domains: ['streetbyte.s3.ap-south-1.amazonaws.com', 'images.unsplash.com', 'lh3.googleusercontent.com'],
-    unoptimized: false,
-    formats: ['image/avif', 'image/webp'],
+    unoptimized: true,
   },
   env: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
@@ -48,13 +47,6 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
-  },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.(svg|png|jpg|jpeg|gif|avif|webp)$/i,
-      type: 'asset/resource',
-    });
-    return config;
   },
 };
 

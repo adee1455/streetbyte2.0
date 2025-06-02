@@ -6,13 +6,13 @@
   "scope": "/",
   "icons": [
     {
-      "src": "https://streetbyte.s3.ap-south-1.amazonaws.com/ByteLogo.png",
+      "src": "logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://streetbyte.s3.ap-south-1.amazonaws.com/ByteLogo.png",
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

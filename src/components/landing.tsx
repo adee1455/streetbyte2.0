@@ -80,7 +80,7 @@ export default function Landing(){
         <div className='bg-white h-full mt-2'>
           <div className=''>
             <img 
-              src="/hero.jpeg" 
+              src="https://streetbyte.s3.ap-south-1.amazonaws.com/hero.jpeg" 
               alt="Hero image"
               className="w-full h-auto"
             />
@@ -96,7 +96,7 @@ export default function Landing(){
 
               <div className="relative">
                 <img 
-                  src="/map.svg" 
+                  src="https://streetbyte.s3.ap-south-1.amazonaws.com/map.svg" 
                   alt="Location Map" 
                   className="mx-auto w-72 h-auto drop-shadow-md"
                 />
@@ -164,7 +164,7 @@ export default function Landing(){
                 <div className="bg-gradient-to-r from-red-500 to-pink-500 rounded-xl p-8 shadow-2xl">
                   <div className="flex flex-col items-center">
                     <img 
-                      src="/nashik.jpg" 
+                      src="https://streetbyte.s3.ap-south-1.amazonaws.com/nashik.jpg" 
                       alt="Nashik" 
                       className="rounded-full w-24 h-24 border-4 border-white shadow-lg mb-4"
                     />

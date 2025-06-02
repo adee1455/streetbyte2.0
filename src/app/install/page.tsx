@@ -12,17 +12,17 @@ export default function InstallPage() {
         {
           title: "Open Share Menu",
           description: "Tap the Share button at the bottom of your browser.",
-          image: "/1st.png"
+          image: "https://streetbyte.s3.ap-south-1.amazonaws.com/1st.png"
         },
         {
           title: "Find Home Screen Option",
           description: "Scroll through the share sheet and tap 'Add to Home Screen'.",
-          image: "/2nd.png"
+          image: "https://streetbyte.s3.ap-south-1.amazonaws.com/2nd.png"
         },
         {
           title: "Complete Installation",
           description: "Tap 'Add' in the top right corner. The app will now appear on your home screen.",
-          image: "/4th.png"
+          image: "https://streetbyte.s3.ap-south-1.amazonaws.com/4th.png"
         }
       ]
     }
@@ -45,7 +45,14 @@ export default function InstallPage() {
       <CardContent className="p-6">
         <h3 className="font-semibold text-lg text-red-600">{step.title}</h3>
         <p className="text-gray-700 mt-1">{step.description}</p>
-        <img src={step.image} alt={step.title} className="rounded-lg shadow-md w-full mt-2" />
+        <img 
+          src={step.image} 
+          alt={step.title} 
+          className="rounded-lg shadow-md w-full mt-2"
+          onError={(e) => {
+            e.currentTarget.src = "https://streetbyte.s3.ap-south-1.amazonaws.com/imageError.png";
+          }}
+        />
       </CardContent>
     </Card>
   ));

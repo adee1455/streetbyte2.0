@@ -7,7 +7,7 @@ const categories = [
   { id: '2', name: 'FastFood', displayName: 'Fast Food', image: 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80&w=200' },
   { id: '3', name: 'Beverages', displayName: 'Beverages', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&q=80&w=200' },
   { id: '4', name: 'Desserts', displayName: 'Desserts', image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&q=80&w=200' },
-  { id: '5', name: 'FineDine', displayName: 'Fine Dine', image: '/finedine.jpg' },
+  { id: '5', name: 'FineDine', displayName: 'Fine Dine', image: 'https://streetbyte.s3.ap-south-1.amazonaws.com/finedine.jpg' },
 ];
 
 interface CategoryScrollProps {

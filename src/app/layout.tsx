@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -9,17 +8,18 @@ import SessionProviderWrapper from "../components/SessionProviderWrapper";
 import ClientLayout from './ClientLayout';
 import { Analytics } from "@vercel/analytics/next"
 import DesktopWarning from "@/components/DesktopWarning";
-import { registerServiceWorker } from "./service-worker-registration";
-import { useEffect } from "react";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-sans",
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -32,40 +32,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  useEffect(() => {
-    registerServiceWorker();
-  }, []);
-
   return (
     <html lang="en">
       <head>
         <link rel="icon" type="image/svg+xml" href="/ByteLogo.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="#EF4443" />
+        <meta name="theme-color" content="#ffffff" />
         <meta name="google-site-verification" content="GjBpuDyiz1HLW_ZYqWWXRUqMFT7xzX5o3okR9xNs6zU" />
         {/* Manifest Link */}
         <link rel="manifest" href="/manifest.json" />
-
-        {/* Service Worker Registration Script */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/service-worker.js').then((registration) => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                  }).catch((error) => {
-                    console.log('Service Worker registration failed:', error);
-                  });
-                });
-              }
-            `,
-          }}
-        />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ServiceWorkerRegistration />
         <DesktopWarning />
         <ClientLayout>
           <InstallAppBanner/>
@@ -74,6 +52,7 @@ export default function RootLayout({
             {children}
           </SessionProviderWrapper>
         </ClientLayout>
+        <Analytics />
       </body>
     </html>
   );

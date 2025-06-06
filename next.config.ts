@@ -49,7 +49,7 @@ const nextConfig: NextConfig = {
       {
         source: '/service-worker.js',
         headers: [
-g          {
+          {
             key: 'Content-Type',
             value: 'application/javascript',
           },

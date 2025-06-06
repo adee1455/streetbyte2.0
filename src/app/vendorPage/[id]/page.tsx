@@ -251,6 +251,8 @@ export default function Page({ params }: VendorPageProps) {
                             src={review.profile}
                             alt={`${review.name}'s profile`}
                             className="w-full h-full object-cover"
+                            crossOrigin="anonymous"
+                            referrerPolicy="no-referrer"
                             onError={(e) => {
                               console.error('Error loading profile image:', review.profile);
                             }}

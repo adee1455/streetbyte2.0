@@ -15,15 +15,18 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, photo
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('PhotoURL received:', photoURL);
     // Reset states when photoURL changes or component mounts
     setImgSrc(null);
     setImageError(false);
     setLoading(true);
 
     if (photoURL && photoURL.trim() !== '') {
+      console.log('Setting image source to:', photoURL);
       // Attempt to load the image after component mounts
       setImgSrc(photoURL);
     } else {
+      console.log('No photoURL provided');
       // No photoURL provided, show error state immediately
       setImageError(true);
       setLoading(false);
@@ -31,11 +34,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, photo
   }, [photoURL]);
 
   const handleImageLoad = () => {
+    console.log('Image loaded successfully');
     setLoading(false);
     setImageError(false);
   };
 
   const handleImageError = () => {
+    console.log('Image failed to load');
     setLoading(false);
     setImageError(true);
     setImgSrc(null); // Clear imgSrc to prevent further load attempts on error
@@ -61,7 +66,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, photo
                     className="rounded-full border-4 border-white object-cover w-full h-full"
                     onLoad={handleImageLoad}
                     onError={handleImageError}
-                    // Consider adding crossOrigin="anonymous" if hosted on a different domain and encountering CORS issues
+                    crossOrigin="anonymous"
+                    referrerPolicy="no-referrer"
                   />
                 )}
                 {!loading && imageError && (

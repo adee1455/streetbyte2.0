@@ -1,3 +1,4 @@
+"use client";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -8,6 +9,8 @@ import SessionProviderWrapper from "../components/SessionProviderWrapper";
 import ClientLayout from './ClientLayout';
 import { Analytics } from "@vercel/analytics/next"
 import DesktopWarning from "@/components/DesktopWarning";
+import { registerServiceWorker } from "./service-worker-registration";
+import { useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +32,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   return (
     <html lang="en">
       <head>

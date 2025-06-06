@@ -10,7 +10,6 @@ import { FloatingActionButton } from '../../../src/components/home/FloatingActio
 import dynamic from 'next/dynamic';
 import { useLocationStore } from '../../store/locationStore';
 import { CityUnavailableModal } from '@/components/landing/CityUnavailableModal';
-import { registerServiceWorker } from '../service-worker-registration';
 
 const DynamicComponent = dynamic(() => import('../../../src/components/home/VendorCard'), {
   loading: () => <p>Loading...</p>,
@@ -36,11 +35,7 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState('');
   const { city } = useLocationStore();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [showUnavailableModal, setShowUnavailableModal] = useState(false); // Track modal state
-
-  useEffect(() => {
-    registerServiceWorker();
-  }, []);
+  const [showUnavailableModal, setShowUnavailableModal] = useState(false);
 
   const fetchCards = async (selectedCity: string) => {
     try {

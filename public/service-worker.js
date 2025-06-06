@@ -1,16 +1,20 @@
-const CACHE_NAME = 'streetbyte-v2';
+const CACHE_NAME = 'streetbyte-v3';
 const urlsToCache = [
   '/',
-  '/index.html', // Assuming index.html is your entry point, adjust if necessary
+  '/manifest.json',
   '/ByteLogo.png',
-  '/manifest.json'
-  // Add other critical assets here, e.g., main CSS, JS bundles
+  '/ByteLogo-192.png',
+  '/ByteLogo-512.png',
+  '/favicon.ico'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+      .then((cache) => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
       .then(() => self.skipWaiting())
   );
 });
@@ -21,6 +25,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -31,17 +36,25 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Try caching first, then network
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Cache hit - return response
         if (response) {
           return response;
         }
-        // No cache hit - fetch from network
-        return fetch(event.request);
-      }
-    )
+        return fetch(event.request).then(
+          (response) => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            return response;
+          }
+        );
+      })
   );
 }); 

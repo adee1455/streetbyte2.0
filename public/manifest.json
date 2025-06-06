@@ -1,18 +1,18 @@
 {
-  "name": "Streetbyte",
+  "name": "StreetByte",
   "short_name": "StreetByte",
   "description": "Find the best street food vendors near you",
   "start_url": "/",
   "scope": "/",
   "icons": [
     {
-      "src": "/ByteLogo.png",
+      "src": "/ByteLogo-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/ByteLogo.png",
+      "src": "/ByteLogo-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -21,5 +21,16 @@
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "categories": ["food", "lifestyle", "shopping"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Search Vendors",
+      "short_name": "Search",
+      "description": "Search for street food vendors",
+      "url": "/search",
+      "icons": [{ "src": "/ByteLogo-192.png", "sizes": "192x192" }]
+    }
+  ]
 } 

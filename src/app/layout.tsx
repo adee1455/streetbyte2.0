@@ -37,9 +37,8 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/svg+xml" href="/ByteLogo.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#EF4443" />
         <meta name="google-site-verification" content="GjBpuDyiz1HLW_ZYqWWXRUqMFT7xzX5o3okR9xNs6zU" />
-        {/* Manifest Link */}
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

@@ -57,28 +57,7 @@ const nextConfig: NextConfig = {
             key: 'Service-Worker-Allowed',
             value: '/',
           },
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate',
-          },
         ],
-      },
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/service-worker.js',
-        destination: '/service-worker.js',
-      },
-    ];
-  },
-  async redirects() {
-    return [
-      {
-        source: '/service-worker.js',
-        destination: '/service-worker.js',
-        permanent: true,
       },
     ];
   },

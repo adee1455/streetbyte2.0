@@ -2,8 +2,7 @@ const CACHE_NAME = 'streetbyte-v1';
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/ByteLogo-192.png',
-  '/ByteLogo-512.png'
+  '/logo.png'
 ];
 
 self.addEventListener('install', event => {

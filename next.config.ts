@@ -53,6 +53,10 @@ const nextConfig: NextConfig = {
             key: 'Content-Type',
             value: 'application/manifest+json',
           },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
+          },
         ],
       },
       {
@@ -75,6 +79,15 @@ const nextConfig: NextConfig = {
       {
         source: '/service-worker.js',
         destination: '/service-worker.js',
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/manifest.json',
+        destination: '/manifest.json',
+        permanent: true,
       },
     ];
   },

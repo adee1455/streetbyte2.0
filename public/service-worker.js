@@ -2,7 +2,8 @@ const CACHE_NAME = 'streetbyte-v1';
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/logo.png'
+  '/ByteLogo-192.png',
+  '/ByteLogo-512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -11,6 +12,9 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('Opened cache');
         return cache.addAll(urlsToCache);
+      })
+      .catch(error => {
+        console.error('Cache failed:', error);
       })
       .then(() => self.skipWaiting())
   );
@@ -22,11 +26,15 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      console.log('Claiming clients');
+      return self.clients.claim();
+    })
   );
 });
 
@@ -35,6 +43,7 @@ self.addEventListener('fetch', event => {
     caches.match(event.request)
       .then(response => {
         if (response) {
+          console.log('Serving from cache:', event.request.url);
           return response;
         }
         return fetch(event.request).then(
@@ -45,11 +54,18 @@ self.addEventListener('fetch', event => {
             const responseToCache = response.clone();
             caches.open(CACHE_NAME)
               .then(cache => {
+                console.log('Caching new resource:', event.request.url);
                 cache.put(event.request, responseToCache);
+              })
+              .catch(error => {
+                console.error('Cache put failed:', error);
               });
             return response;
           }
-        );
+        ).catch(error => {
+          console.error('Fetch failed:', error);
+          return caches.match('/ByteLogo-192.png'); // Fallback to cached logo
+        });
       })
   );
 }); 
